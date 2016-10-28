@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 24 15:29:24 2016
+
+Authors: Andrew Alferman and Dan Magee
+
+This code creates all of the required plots for problem 4 of ME526 HW#2 Fall 16
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Finds the exact solution using the given equation.
+def exactsoln(t, y0):
+    y = -1 * np.log(np.exp(-1 * y0) + np.exp(-t) - 1)
+    return y
+
+
+# Create a function that will create all the data for a single y0 value
+def backeuler(y0):
+    h = 0.2
+    yv = y0
+    yo = yv
+    tv = 0.0
+    maxt = 10.0
+    # Create a few lists to store all of the data
+    tlist, ylist, error = [], [], []
+    while tv <= maxt:
+        tlist.append(tv)
+        ylist.append(yv)
+        error.append(np.absolute(exactsoln(tv, y0) - yv))
+        for i in range(200):
+            f = -1 * h * np.exp(yv - (tv + h)) + yv - yo
+            fprime = -1 * h * np.exp(yv - (tv + h)) + 1.0
+            yvn = yv - f / fprime
+            if np.absolute((yvn - yv) / yv) < 0.001:
+                break
+        yo = yv
+        yv = yvn
+        tv += h
+    return tlist, ylist, error
+
+
+def linback(y0):
+    h = 0.2
+    yv = y0
+    tv = 0.0
+    maxt = 10.0
+    # Create a few lists to store all of the data
+    tlist, ylist, error = [], [], []
+    while tv <= maxt:
+        tlist.append(tv)
+        ylist.append(yv)
+        error.append(np.absolute(yv-exactsoln(tv, y0)))
+        yv = (h * np.exp(yv - (tv + h)) * (1 - yv) + yv) /\
+             (1 - h * np.exp(yv - (tv + h)))
+        tv += h
+    return tlist, ylist, error
+
+# Range of iy0 values
+yvalues = [-0.00001, -1]
+
+# Create the exact solution
+t = 0.0
+ev1, ets, ev2 = [], [], []
+while t <= 10.0:
+    ev1.append(exactsoln(t, yvalues[0]))
+    ev2.append(exactsoln(t, yvalues[1]))
+    ets.append(t)
+    t += 0.001
+
+# Plot all of the results
+for i in yvalues:
+    tvb, yvb, errorb = backeuler(i)
+    tvl, yvl, errorl = linback(i)
+
+    if i == yvalues[0]:
+        for j in range(4):
+            if j == 0 or j == 2:
+                plt.figure(j+1)
+                plt.plot(ets, ev1, label='Exact Solution w/ y0 = {}'
+                         .format(yvalues[0]))
+                plt.plot(ets, ev2, label='Exact Solution w/ y0 = {}'
+                         .format(yvalues[1]))
+    plt.figure(1)
+    plt.plot(tvb, yvb, label='Approx w/ y0 Value = {}'.format(i))
+    plt.title('Implicit Euler Approximation')
+    plt.ylim(-4, 4)
+    plt.figure(2)
+    plt.plot(tvb, errorb, label='Approx w/ y0 Value = {}'.format(i))
+    plt.title('Implicit Euler Error')
+    plt.figure(3)
+    plt.plot(tvl, yvl, label='Approx w/ y0 Value = {}'.format(i))
+    plt.title('Linearized Implicit Euler Approximation')
+    plt.figure(4)
+    plt.plot(tvl, errorl, label='Approx w/ y0 Value = {}'.format(i))
+    plt.title('Linearized Implicit Euler Error')
+    for j in range(4):
+        if j == 0 or j == 2:
+            plt.figure(j+1)
+            plt.ylabel('Y Value')
+        else:
+            plt.figure(j+1)
+            plt.ylabel('Error Value')
+        plt.figure(j+1)
+        plt.xlabel('Time')
+        plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.show()

@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 19 14:27:09 2016
+
+Authors: Andrew Alferman and Dan Magee
+
+This code creates all of the required plots for problem 1 of ME526 HW#2 Fall 16
+"""
+
+# Import some of the libraries needed in order to solve all of the expressions
+# of the modified wavefunctions, and to plot out the results.
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Creating five functions, one for each of the five approximations of the first
+# derivative.  Each of the functions takes the value of k and delta_x, and
+# returns the value of i * k_star * delta_x, abbreviated as iksdx.
+# Note that j ---> i (sqrt(-1)) in Python.
+def fn_one(k, delx):
+    iksdx = 1 - np.cos(k * delx) + 1j*np.sin(k * delx)
+    return iksdx
+
+
+def fn_two(k, delx):
+    iksdx = 1j * np.sin(k * delx)
+    return iksdx
+
+
+def fn_three(k, delx):
+    iksdx = 1.5 - 2*np.cos(k * delx) + 2j*np.sin(k * delx) + \
+            0.5*np.cos(2 * k * delx) - 0.5j*np.sin(2 * k * delx)
+    return iksdx
+
+
+def fn_four(k, delx):
+    iksdx = (np.cos(3 * k * delx) - 1j*np.sin(3 * k * delx) -
+             6*np.cos(2 * k * delx) + 6j*np.sin(2 * k * delx) +
+             3*np.cos(k * delx) - 3j*np.sin(k * delx) + 2) * 0.1666666666666666
+    return iksdx
+
+
+def fn_five(k, delx):
+    iksdx = (-1j*np.sin(2 * k * delx) + 8j*np.sin(k * delx)) * 0.16666666666666
+    return iksdx
+
+
+# Create a function that finds the actual value of k * delta_x
+def fn_act(k, delx):
+    kdx = k * delx
+    return kdx
+
+
+# Create a function that determines the error of a given input
+def error(fn_value, delx):
+    act = fn_act(1.0, delx)
+    err = 100 * (np.absolute(fn_value - act)) / act
+    return err
+
+# Set the number of grid points
+n_grid = 100
+n_grid_i = 1 / n_grid
+
+# Define all of the values given to us in the problem
+length = 2 * np.pi
+delx = length / n_grid
+
+# Create lists that will capture all of the information that will be plotted
+kv, one, two, three, four, five, act, = [], [], [], [], [], [], []
+
+# Create all of the data points in a for loop
+for i in range(0, int(n_grid / 2 + 1)):
+    wvn = 2 * np.pi * i * n_grid_i
+    one.append([wvn, fn_one(i, delx)])
+    two.append([wvn, fn_two(i, delx)])
+    three.append([wvn, fn_three(i, delx)])
+    four.append([wvn, fn_four(i, delx)])
+    five.append([wvn, fn_five(i, delx)])
+    act.append([wvn, fn_act(i, delx)])
+
+# Turn all of the lists into arrays so that they can be plotted easier
+one = np.array(one)
+two = np.array(two)
+three = np.array(three)
+four = np.array(four)
+five = np.array(five)
+act = np.array(act)
+
+# Print out all of the plots of the imaginary values of each function vs. act.
+# Note that if only the imaginary parts are looked at, functions 1 and 2
+# are identical.
+plt.plot(one[:, 0], one[:, 1].imag, label="1")
+plt.plot(two[:, 0], two[:, 1].imag, label="2")
+plt.plot(three[:, 0], three[:, 1].imag, label="3")
+plt.plot(four[:, 0], four[:, 1].imag, label="4")
+plt.plot(five[:, 0], five[:, 1].imag, label="5")
+plt.plot(act[:, 0], act[:, 1], label="Actual")
+plt.ylabel("Function Value (Multiples of i)")
+plt.xlabel("x Value")
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.title("Figure 1: Plot of Imaginary Parts vs. Actual")
+plt.show()
+print("Note: Functions 1 and 2 occupy the same line in this figure because\
+      they have the same imaginary parts.")
+
+# Print out all of the plots of the real values of each function vs. act.
+# Note that functions 2 and 5 have no real parts and therefor occupy the same
+# horizontal line
+plt.plot(one[:, 0], np.exp(-1 * one[:, 1].real) /
+         np.exp(-1 * act[:, 1]), label="1")
+plt.plot(two[:, 0], np.exp(-1 * two[:, 1].real) /
+         np.exp(-1 * act[:, 1]), label="2")
+plt.plot(three[:, 0], np.exp(-1 * three[:, 1].real) /
+         np.exp(-1 * act[:, 1]), label="3")
+plt.plot(four[:, 0], np.exp(-1 * four[:, 1].real) /
+         np.exp(-1 * act[:, 1]), label="4")
+plt.plot(five[:, 0], np.exp(-1 * five[:, 1].real) /
+         np.exp(-1 * act[:, 1]), label="5")
+plt.plot(act[:, 0], np.exp(-1 * act[:, 1]) /
+         np.exp(-1 * act[:, 1]), label="Actual")
+plt.ylabel("Function Value")
+plt.xlabel("x Value")
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.title("Figure 2: Plot of Real Parts vs. Actual")
+plt.ylim([0.0, 5.0])
+plt.show()
+print("Note: Functions 2 and 5 occupy the same horizontal line because they\
+      have no real parts.")
+
+# Initialize data capturing lists and k value for part d
+sone, stwo, sthree, sfour, sfive = [], [], [], [], []
+k = 1.0
+
+# Iterate the error check function for a grid spacing range of 2 to 100.
+# Note that only the imaginary part of each function was evaluated for this
+# problem.  Consequentially, functions 1 and 2 occupy the same line because
+# the imaginary parts are identical.
+for d in range(2, 101):
+    dlx = length / d
+    sone.append([d, error(fn_one(k, dlx), dlx)])
+    stwo.append([d, error(fn_two(k, dlx), dlx)])
+    sthree.append([d, error(fn_three(k, dlx), dlx)])
+    sfour.append([d, error(fn_four(k, dlx), dlx)])
+    sfive.append([d, error(fn_five(k, dlx), dlx)])
+
+# Turn all of the part d data capturing lists into arrays to be plotted
+sone = np.array(sone)
+stwo = np.array(stwo)
+sthree = np.array(sthree)
+sfour = np.array(sfour)
+sfive = np.array(sfive)
+
+# Plot all of the error functions.
+plt.loglog(sone[:, 0], sone[:, 1], label="1")
+plt.loglog(stwo[:, 0], stwo[:, 1], label="2")
+plt.loglog(sthree[:, 0], sthree[:, 1], label="3")
+plt.loglog(sfour[:, 0], sfour[:, 1], label="4")
+plt.loglog(sfive[:, 0], sfive[:, 1], label="5")
+plt.ylabel("Absolute Error")
+plt.xlabel("Number of Grid Points N")
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.title("Figure 3: Error vs. N")
+plt.show()
+print("Note: Functions 1 and 2 occupy the same line because the imaginary\
+      parts are identical.  As seen in this plot, functions 1 through 4 all \
+      have second order accuracy based on the slopes.  Function 5 has 4th\
+      order accuracy.")

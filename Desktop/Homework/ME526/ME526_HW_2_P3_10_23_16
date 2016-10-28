@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 19 21:29:54 2016
+
+Authors: Andrew Alferman and Dan Magee
+
+This code creates all of the required plots for problem 3 of ME526 HW#2 Fall 16
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Finds the exact solution using the value found from step 2.a)
+def exactsoln(x):
+    y = 4 * np.exp(-2*x - 0.0033333333333333333*x**3)
+    return y
+
+
+# Create functions that will create all the data for a single stepsize
+def fwdeuler(delx):
+    # Set up the initial conditions and other parameters.
+    yv = 4.0
+    xv = 0.0
+    maxx = 10.0
+    # Create a few lists to store all of the data
+    xlist, ylist, error = [], [], []
+    while xv <= maxx:
+        xlist.append(xv)
+        ylist.append(yv)
+        error.append(np.absolute(yv - exactsoln(xv)))
+        yv = yv * (-2*delx - 0.01*delx*xv**2 + 1)
+        xv += delx
+    return xlist, ylist, error
+
+
+def backeuler(delx):
+    # Set up the initial conditions and other parameters.
+    yv = 4.0
+    xv = 0.0
+    maxx = 10.0
+    # Create a few lists to store all of the data
+    xlist, ylist, error = [], [], []
+    while xv <= maxx:
+        xlist.append(xv)
+        ylist.append(yv)
+        error.append(np.absolute(yv-exactsoln(xv)))
+        yv = yv / (1 + 2*delx - 0.01*delx*xv**2)
+        xv += delx
+    return xlist, ylist, error
+
+
+def trapezoidal(delx):
+    # Set up the initial conditions and other parameters.
+    yv = 4.0
+    xv = 0.0
+    maxx = 10.0
+    # Create a few lists to store all of the data
+    xlist, ylist, error = [], [], []
+    while xv <= maxx:
+        xlist.append(xv)
+        ylist.append(yv)
+        error.append(np.absolute(yv-exactsoln(xv)))
+        yv = -1 * yv * (-1 + delx + 0.005*xv**2) / (1 + delx + 0.005*xv**2)
+        xv += delx
+    return xlist, ylist, error
+
+# Create the exact solution
+t = 0.0
+ev, ets = [], []
+while t <= 10.0:
+    ev.append(exactsoln(t))
+    ets.append(t)
+    t += 0.001
+
+# Range of step sizes
+steps = [0.1, 0.5, 1.0]
+
+# Plot all of the results
+for i in steps:
+    xvf, yvf, errorf = fwdeuler(i)
+    xvb, yvb, errorb = backeuler(i)
+    xvt, yvt, errort = trapezoidal(i)
+
+    plt.figure(1)
+    if i == steps[0]:
+        plt.plot(ets, ev, label='Exact Solution')
+    plt.plot(xvf, yvf, label='Delta x = {}'.format(i))
+    plt.xlabel('X Value')
+    plt.ylabel('Y Value')
+    plt.title('Forward Euler Approximation')
+    plt.ylim(-1, 5)
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+
+    plt.figure(2)
+    plt.plot(xvf, errorf, label='Delta x = {}'.format(i))
+    plt.xlabel('X Value')
+    plt.ylabel('Error Value')
+    plt.title('Forward Euler Error')
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+
+    plt.figure(3)
+    if i == steps[0]:
+        plt.plot(ets, ev, label='Exact Solution')
+    plt.plot(xvb, yvb, label='Delta x = {}'.format(i))
+    plt.xlabel('X Value')
+    plt.ylabel('Y Value')
+    plt.title('Backward Euler Approximation')
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+
+    plt.figure(4)
+    plt.plot(xvb, errorb, label='Delta x = {}'.format(i))
+    plt.xlabel('X Value')
+    plt.ylabel('Error Value')
+    plt.title('Backward Euler Error')
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+
+    plt.figure(5)
+    if i == steps[0]:
+        plt.plot(ets, ev, label='Exact Solution')
+    plt.plot(xvt, yvt, label='Delta x = {}'.format(i))
+    plt.xlabel('X Value')
+    plt.ylabel('Y Value')
+    plt.title('Trapezoidal Approximation')
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+
+    plt.figure(6)
+    plt.plot(xvt, errort, label='Delta x = {}'.format(i))
+    plt.xlabel('X Value')
+    plt.ylabel('Error Value')
+    plt.title('Trapezoidal Error')
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+
+plt.show()
