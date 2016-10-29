@@ -12,9 +12,11 @@ import matplotlib.pyplot as plt
 # Configuration options for plotting
 strmlinon = 1
 velpoton = 1
-wallon = 0
-gridlines = 0
+wallon = 1
+gridlines = 1
 labelson = 0
+meshpoints = 501
+functionlines = 100
 
 # Define all of the initial conditions
 d = 0.2
@@ -22,26 +24,32 @@ p_inf = 101.0
 u = 10.0
 
 # Define some more conditions that will be played with later
-mu_v = 5
+mu_v = 1.2
 
 # Set up a mesh for plotting contour lines
-xlist = np.linspace(-1, 1, 101)
-ylist = np.linspace(-1, 1, 101)
+xlist = np.linspace(-0.6, 0.6, meshpoints)
+ylist = np.linspace(-0.6, 0.6, meshpoints)
 X, Y = np.meshgrid(xlist, ylist)
 
 # Generate all the data
-mu_d = u * d**2.0
 theta = np.arctan2(Y, X)
 r = np.sqrt(X**2.0 + Y**2.0)
 if strmlinon == 1:
-    psi = u*r*np.sin(theta) * (1.0 - mu_d / (u * r**2.0)) - mu_v*np.log(r)
-    streamlines = plt.contour(X, Y, psi, 50, colors='blue', linestyle='-')
+    psi = u*r*np.sin(theta) * (1.0 - ((d / 2) / r)**2.0) - mu_v*np.log(r)
+    streamlines = plt.contour(X, Y, psi, functionlines, colors='blue')
 if velpoton == 1:
-    phi = -1*u*r*np.cos(theta) * (1 + mu_d / (u * r**2.0)) + mu_v*theta
-    vel_potential = plt.contour(X, Y, phi, 50, colors='red', linestyle='-')
+    phi = -1*u*r*np.cos(theta) * (1 + ((d / 2) / r)**2.0) - mu_v*theta
+    # This part is needed to fix an annoying bug with pyplot that would cause
+    # a thick horizontal line coming in from the left due to the plot trying
+    # to attach lines at the discontinuity caused by the arctan2 term.
+    # Unfortunately, it also messes up velocity potential lines near the axes.
+    for i in range(int(len(xlist)/2)):
+        phi[len(ylist)/2, i] = np.nan
+    vel_potential = plt.contour(X, Y, phi, functionlines, colors='red')
 if wallon == 1:
-    wall =  r
-    surface = plt.contour(X, Y, wall, 1, color='black')
+    surface = plt.Circle((0, 0), d/2, color='black', fill=False)
+    ax = plt.gca()
+    ax.add_artist(surface)
 
 # Plot the results
 if labelson == 1:
