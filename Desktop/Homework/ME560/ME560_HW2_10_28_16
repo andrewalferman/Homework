@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 28 12:41:15 2016
+
+@author: Andrew Alferman
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Configuration options for plotting
+strmlinon = 1
+velpoton = 1
+wallon = 0
+gridlines = 0
+labelson = 0
+
+# Define all of the initial conditions
+d = 0.2
+p_inf = 101.0
+u = 10.0
+
+# Define some more conditions that will be played with later
+mu_v = 5
+
+# Set up a mesh for plotting contour lines
+xlist = np.linspace(-1, 1, 11)
+ylist = -1 * np.linspace(-1, 1, 11)
+X, Y = np.meshgrid(xlist, ylist)
+
+# Correction function that will be used later
+#cor = []
+#for i in range(len(xlist)):
+#    cor.append(0)
+#for j in range(int(len(xlist)/2)):
+#    cor[j] = np.pi
+#print(cor)
+
+# Generate all the data
+mu_d = u * d**2.0
+theta = np.arctan2(Y, X)
+targrow = int(len(ylist) / 2)
+#for k in range(len(xlist)):
+#    theta[targrow, k] = cor[k]
+r = np.sqrt(X**2.0 + Y**2.0)
+if strmlinon == 1:
+    psi = u*r*np.sin(theta) * (1.0 - mu_d / (u * r**2.0)) - mu_v*np.log(r)
+    streamlines = plt.contour(X, Y, psi, 10, colors='blue', linestyle='-')
+if velpoton == 1:
+    phi = -1*u*r*np.cos(theta) * (1 + mu_d / (u * r**2.0)) + mu_v*theta
+    vel_potential = plt.contour(X, Y, phi, 50, colors='red', linestyle='-')
+if wallon == 1:
+    # Ignore the weird exponential, this is just to draw a circle for reference
+   wall =  r
+   surface = plt.contour(X, Y, wall, 1, color='black')
+
+# Plot the results
+if labelson == 1:
+    plt.clabel(streamlines, inline=True, fontsize=10)
+    plt.clabel(vel_potential, inline=True, fontsize=10)
+if gridlines == 1:
+    plt.grid(b=True, which='both', color='black', linestyle='-')
+if strmlinon == 1 and velpoton == 1:
+    plt.title("Streamfunction and Velocity Potential Plot")
+elif strmlinon == 1 and velpoton != 1:
+    plt.title("Streamfunction Plot")
+else:
+    plt.title("Velocity Potential Plot")
+plt.xlabel("X Distance (meters)")
+plt.ylabel("Y Distance (meters) ")
+plt.show()
+print(180.0 * theta / np.pi)
+print()
+print(Y)
+print(phi)
