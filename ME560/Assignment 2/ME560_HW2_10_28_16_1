@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 28 12:41:15 2016
+
+@author: Andrew Alferman
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Configuration options for plotting
+strmlinon = 1
+velpoton = 1
+wallon = 1
+gridlines = 1
+labelson = 0
+meshpoints = 501
+functionlines = 100
+
+# Define all of the initial conditions
+d = 0.2
+p_inf = 101.0
+u = 10.0
+
+# Define some more conditions that will be played with later
+mu_v = 1.2
+
+# Set up a mesh for plotting contour lines
+xlist = np.linspace(-0.6, 0.6, meshpoints)
+ylist = np.linspace(-0.6, 0.6, meshpoints)
+X, Y = np.meshgrid(xlist, ylist)
+
+# Generate all the data
+theta = np.arctan2(Y, X)
+r = np.sqrt(X**2.0 + Y**2.0)
+if strmlinon == 1:
+    psi = u*r*np.sin(theta) * (1.0 - ((d / 2) / r)**2.0) - mu_v*np.log(r)
+    streamlines = plt.contour(X, Y, psi, functionlines, colors='blue')
+if velpoton == 1:
+    phi = -1*u*r*np.cos(theta) * (1 + ((d / 2) / r)**2.0) - mu_v*theta
+    # This part is needed to fix an annoying bug with pyplot that would cause
+    # a thick horizontal line coming in from the left due to the plot trying
+    # to attach lines at the discontinuity caused by the arctan2 term.
+    # Unfortunately, it also messes up velocity potential lines near the axes.
+    for i in range(int(len(xlist)/2)):
+        phi[len(ylist)/2, i] = np.nan
+    vel_potential = plt.contour(X, Y, phi, functionlines, colors='red')
+if wallon == 1:
+    surface = plt.Circle((0, 0), d/2, color='black', fill=False)
+    ax = plt.gca()
+    ax.add_artist(surface)
+
+# Plot the results
+if labelson == 1:
+    plt.clabel(streamlines, inline=True, fontsize=10)
+    plt.clabel(vel_potential, inline=True, fontsize=10)
+if gridlines == 1:
+    plt.grid(b=True, which='both', color='black', linestyle='-')
+if strmlinon == 1 and velpoton == 1:
+    plt.title("Streamfunction and Velocity Potential Plot")
+elif strmlinon == 1 and velpoton != 1:
+    plt.title("Streamfunction Plot")
+else:
+    plt.title("Velocity Potential Plot")
+plt.xlabel("X Distance (meters)")
+plt.ylabel("Y Distance (meters) ")
+plt.show()

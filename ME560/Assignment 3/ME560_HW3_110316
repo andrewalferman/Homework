@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 31 11:47:02 2016
+
+@author: Andrew Alferman and Nathan Schorn
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Global variables
+c = 0.5
+meshpoints = 100
+aoam = [0.0, 2.0, 5.0]
+u = 1.0
+p_inf = 101000
+method = 1
+
+
+# Create a function that uses the given equation to make vertexes for the
+# panels. The function also finds the vortex points, colocation points, and
+# angle outward (normal) from the panel.
+def createaij(meshpoints, c):
+    # Setting up lists for X coordinate (xc), eta coordinate (etac), vortex
+    # coordinates (vcx/vcz), colocation point coordinates (clcx/clcz),
+    # and angle normal to panel (ni)
+    xc, etac, vcx, vcz, clcx, clcz, ni, plm = [], [], [], [], [], [], [], []
+    # Initialize a few variables to create the points.
+    x, oldslope = 0, 0
+    dx = c / meshpoints
+    c_i = 1 / c
+    # Create all of the vertex points.
+    """
+    for i in range(meshpoints):
+        newslope = 0.4 * (c - 4*x) * (c - x)**2 * c_i**4
+        if np.abs(np.arctan(newslope) - np.arctan(oldslope)) > np.radians(1):
+            etac.append(0.2 * x * c_i * (1 - x*c_i)**3)
+            xc.append(x)
+            oldslope = newslope
+        x += dx
+    xc.append(c)
+    etac.append(0.0)
+    """
+    for i in range(meshpoints + 1):
+        xc.append(x)
+        etac.append(0.2 * x * c_i * (1 - x*c_i)**3)
+        x += dx
+    
+    # Create the vertex points and colocation points
+    for i in range(1, len(xc)):
+        vcx.append(xc[i] - 0.75*(xc[i]-xc[i-1]))
+        vcz.append(etac[i] - 0.75*(etac[i]-etac[i-1]))
+        clcx.append(xc[i] - 0.25*(xc[i]-xc[i-1]))
+        clcz.append(etac[i] - 0.25*(etac[i]-etac[i-1]))
+        ni.append(np.pi/2 + np.arctan((etac[i]-etac[i-1])/(xc[i]-xc[i-1])))
+        plm.append(np.sqrt((xc[i]-xc[i-1])**2 + (etac[i]-etac[i-1])**2))
+    # Create the aij matrix
+    aij = []
+    for i in range(len(vcx)):
+        aijr = []
+        for j in range(len(clcx)):
+            lr = (clcx[i] - vcx[j])**2 + (clcz[i] - vcz[j])**2
+            u = (1 / (2 * np.pi)) * (clcz[i] - vcz[j]) / lr
+            w = (-1 / (2 * np.pi)) * (clcx[i] - vcx[j]) / lr
+            n = [np.cos(ni[i]), np.sin(ni[i])]
+            q = [u, w]
+            aijr.append(np.dot(q, n))
+        aij.append(aijr)
+    aij = np.array(aij)
+    return xc, etac, vcx, vcz, clcx, clcz, ni, aij, plm
+
+
+def findgammas(ni, aij, aoa, u, plm):
+    umatrix = []
+    for i in range(len(ni)):
+        umatrix.append(-1 * np.dot([u * np.cos(np.radians(aoa)),
+                                    u * np.sin(np.radians(aoa))],
+                                   [np.cos(ni[i]), np.sin(ni[i])]))
+    aiji = np.linalg.inv(aij)
+    gammas = np.dot(aiji, umatrix)
+    gammal = []
+    for i in range(len(gammas)):
+        gammal.append(gammas[i] / plm[i])
+    return gammas, gammal
+
+
+xc, etac, vcx, vcz, clcx, clcz, ni, aij, plm = createaij(meshpoints, c)
+tliftm, ppressm = [], []
+for i in aoam:
+    gammas, gammal = findgammas(ni, aij, i, 1.0, plm)
+    gammat = 0
+    ppress = []
+    for j in range(len(gammas)):
+        gammat += gammas[j]
+        ppress.append(p_inf - gammas[j] * u * 1000 / plm[j])
+    ppressm.append(ppress)
+    tliftm.append(gammat * u * 1000)
+
+    plt.figure(1)
+    plt.title('Circulation per Panel')
+    plt.plot(vcx, gammas, label='AoA = {}'.format(i))
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+    plt.grid(b=True, which='both')
+
+    plt.figure(2)
+    plt.title('Pressure per Panel')
+    plt.plot(vcx, ppress, label='AoA = {}'.format(i))
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+    plt.grid(b=True, which='both')
+    """
+    plt.figure(2)
+    plt.title('Normalized Circulation vs Chord Length')
+    plt.plot(vcx, gammal, label='AoA = {}'.format(i))
+    plt.legend(bbox_to_anchor=(1, 1), loc=2)
+    plt.grid(b=True, which='both')
+    """
+
+plt.figure(3)
+plt.scatter(xc, etac, color='blue')
+plt.xlabel('Length X (meters)', fontsize=12)
+plt.ylabel('Width Z (meters)', fontsize=12)
+plt.title('Panel Vertex Locations (Stretched in Y Direction)', fontsize=14)
+plt.xlim(0, 0.5)
+plt.grid(b=True, which='both')
+
+plt.figure(4)
+plt.plot(xc, etac, color='blue')
+plt.xlabel('Length X (meters)', fontsize=12)
+plt.ylabel('Width Z (meters)', fontsize=12)
+plt.title('Hydrofoil Shape (Stretched in Y Direction)', fontsize=14)
+plt.xlim(0, 0.5)
+plt.grid(b=True, which='both')
+plt.show()
+
+for i in range(len(aoam)):
+    print('Lift with AoA = {}: {:.2f}'.format(aoam[i], tliftm[i]))
+
+"""
+print('Panel Edge Coordinates:')
+for i in range(len(xc)):
+    print('X: {:.4f}, Z: {:.4f}'.format(xc[i], etac[i]))
+print('Vortex Coordinates,    CLC Pt. Coordinates:')
+for i in range(len(vcx)):
+    print('X: {:.4f}, Y: {:.4f},    Z: {:.4f}, Y: {:.4f}'
+          .format(vcx[i], vcz[i], clcx[i], clcz[i]))
+"""

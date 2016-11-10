@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 19 21:29:54 2016
+
+Authors: Andrew Alferman and Dan Magee
+
+This code creates all of the required plots for problem 2 of ME526 HW#2 Fall 16
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Finds the exact solution using the value found from step 2.a)
+def exactsoln(t):
+    v = 101.0 / (100.0*np.sin(2.0 * t) - 10.0*np.cos(2.0 * t) +
+                 111.0*np.exp(0.2 * t))
+    return v
+
+
+# Create a function that will create all the data for a single stepsize
+def fwdeuler(stepsize):
+    # Set up the initial conditions and other parameters.
+    v = 1.0
+    time = 0.0
+    maxtime = 150.0
+    # Create a few lists to store all of the data
+    tlist, vlist, error = [], [], []
+    while time <= maxtime:
+        tlist.append(time)
+        vlist.append(v)
+        error.append(np.absolute(v - exactsoln(time)))
+        v += (-0.2*v - 2*np.cos(2*time)*v**2) * stepsize
+        time += stepsize
+    return tlist, vlist, error
+
+
+# Range of step sizes
+steps = [0.2, 0.05, 0.025, 0.006]
+erl, erlt = [], []
+
+for i in steps:
+    time, vel, error = fwdeuler(i)
+    plt.figure(1)
+    plt.plot(time, vel, label='Delta t = {}'.format(i))
+    plt.figure(2)
+    plt.plot(time, error, label='Delta t = {}'.format(i))
+
+# Plot the exact solution
+t = 0.0
+ev, ets = [], []
+
+while t <= 7.0:
+    ev.append(exactsoln(t))
+    ets.append(t)
+    t += 0.001
+
+plt.figure(1)
+plt.plot(ets, ev, label='Exact Solution')
+
+# Plot the result
+plt.figure(1)
+plt.xlabel('Time')
+plt.ylabel('Velocity')
+plt.title('Forward Euler Approximation')
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.xlim(0.0, 7.0)
+plt.figure(2)
+plt.xlabel('Time')
+plt.ylabel('Error')
+plt.title('Error of Fwd Euler Approximation')
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.xlim(0.0, 7.0)
+plt.show()
+print("As seen in the two graphs above, a step size of delta t = 0.006\
+      provides a reasonable approximation for the exact function.  The error\
+      is less than 0.05, and the function converges in a stable manner and\
+      follows the trend of the exact solution. A smaller grid size may be used\
+      if greater accuracy of the solution is needed, especially at t ~= 2.5.")
