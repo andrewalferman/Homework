@@ -60,7 +60,7 @@ def createaij(meshpoints, c):
 
 
 # Create a function that finds the circulation across all the panels
-def findgammas(ni, aij, aoa, u, plm):
+def findgammas(ni, aij, aoa, u):
     umatrix = []
     for i in range(len(ni)):
         umatrix.append(-1 * np.dot([u * np.cos(np.radians(aoa)),
@@ -68,10 +68,7 @@ def findgammas(ni, aij, aoa, u, plm):
                                    [np.cos(ni[i]), np.sin(ni[i])]))
     aiji = np.linalg.inv(aij)
     gammas = np.dot(aiji, umatrix)
-    gammal = []
-    for i in range(len(gammas)):
-        gammal.append(gammas[i] / plm[i])
-    return gammas, gammal
+    return gammas
 
 
 def flatplate(meshpoints, c):
@@ -114,29 +111,25 @@ def flatplate(meshpoints, c):
 xc, etac, vcx, vcz, clcx, clcz, ni, aij, plm = createaij(meshpoints, c)
 fxc, fetac, fvcx, fvcz, fclcx, fclcz, fni, faij, fplm =\
     flatplate(meshpoints, c)
-tliftm, ppressm, gammam, cpm = [], [], [], []
-ftliftm, fppressm, fgammam, fcpm = [], [], [], []
+tliftm, gammam, cpm = [], [], []
+ftliftm, fgammam, fcpm = [], [], []
 for i in aoam:
     cp = []
     fcp = []
-    gammas, gammal = findgammas(ni, aij, i, u, plm)
+    gammas = findgammas(ni, aij, i, u)
     gammam.append(np.ndarray.tolist(gammas))
     gammat = 0
-#    ppress = []
-    fgammas, fgammal = findgammas(fni, faij, i, u, fplm)
+    fgammas = findgammas(fni, faij, i, u)
     fgammam.append(np.ndarray.tolist(fgammas))
     fgammat = 0
-#    fppress = []
     for j in range(len(gammas)):
         gammat += gammas[j]
         fgammat += fgammas[j]
-#    ppressm.append(ppress)
-#    fppressm.append(fppress)
-    tliftm.append(gammat * u * 1000 * np.cos(np.radians(i)))
-    ftliftm.append(fgammat * u * 1000 * np.cos(np.radians(i)))
+    tliftm.append(gammat * u * 1000)
+    ftliftm.append(fgammat * u * 1000)
     for k in range(len(gammas)):
-        cp.append(1000 * u**2 * gammas[k] / plm[k])
-        fcp.append(1000 * u**2 * fgammas[k] / fplm[k])
+        cp.append(2 * gammas[k] / (u * plm[k]))
+        fcp.append(2 * fgammas[k] / (u * fplm[k]))
     cpm.append(cp)
     fcpm.append(fcp)
     plt.figure(1)
@@ -145,7 +138,7 @@ for i in aoam:
     plt.legend(bbox_to_anchor=(1, 1), loc=2)
 
     plt.figure(2)
-    plt.title('Pressure per Panel')
+    plt.title('Local Pressure Coefficient per Panel')
     plt.plot(clcx, cp, label='AoA = {}'.format(i))
     plt.legend(bbox_to_anchor=(1, 1), loc=2)
 gammam = np.array(gammam)
@@ -170,10 +163,12 @@ for i in range(1, 5):
     plt.grid(b=True, which='both')
 plt.show()
 
+print('For 1m Span Length:')
 for i in range(len(aoam)):
     print('Lift with AoA = {}: {:.2f}'.format(aoam[i], tliftm[i]))
     print('Flat Plate Lift with AoA = {}: {:.2f}'.format(aoam[i], ftliftm[i]))
 
+# The code below just outputs the location of points in an easy to read format
 vertexes, clc, vc = [], [], []
 for i in range(len(clcx)):
     clc.append([clcx[i], clcz[i]])
