@@ -1,0 +1,240 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov 26 18:44:47 2016
+
+@author: andrewalferman
+"""
+
+# Import modules as required
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Create functions to do some of the work
+def exactsolution(xmesh, ymesh):
+    """This function finds the exact solution using a large number of
+    iterations of the given formula (summing to infinity isn't possible).
+    Note that this function requires an even number of mesh points in the x
+    and y directions."""
+    n = len(xmesh[0])
+    temperature = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            summedterm = 0
+            # For some reason this destabilizies if k is greater than 115.
+            # May need to look into this further, however the numbers look ok.
+            # Suspect a limitation with Numpy and the sinh function or some
+            # type of overflow error.
+            for k in [x for x in range(115) if x % 2 == 1]:
+                summedterm += np.sinh(k * np.pi * xmesh[i][j]) * np.cos(k *
+                                      np.pi * ymesh[i][j]) /\
+                                      (((k * np.pi)**2.) *\
+                                       np.sinh(2 * k * np.pi))
+            temperature[i][j] = (xmesh[i][j] / 4.) - 4. * summedterm
+    return temperature
+
+
+def pointjacobi(meshparameters):
+    dx, dy, xmesh, ymesh, startmesh, tolerance, exactmesh = meshparameters
+    dx2 = dx**2
+    dy2 = dy**2
+    alpha = dx2 * dy2 / (2*dx2 + 2*dy2)
+    oldmesh = startmesh
+    oldmesh = np.array(oldmesh)
+    pjmesh = oldmesh
+    pjmesh = np.array(pjmesh)
+    pjiteration = 0
+    itest = int((len(xmesh[0]) + 1) / 2)
+    jtest = int((len(ymesh[0]) + 1) / 2)
+    pjvariation = 999999.
+    while pjvariation >= tolerance or pjiteration < itest * 10:
+        for i in range(1, len(pjmesh[0]) - 1):
+            for j in range(1, len(pjmesh[0]) - 1):
+                pjmesh[j, i] = alpha *\
+                            (((oldmesh[j, i+1] + oldmesh[j, i-1]) / dx2) +
+                             (oldmesh[j+1, i] + oldmesh[j-1, i]) / dy2)
+            pjmesh[0, i] = alpha *\
+                            (((oldmesh[0, i+1] + oldmesh[0, i-1]) / dx2) +\
+                               2 * oldmesh[1, i] / dy2)
+            pjmesh[len(oldmesh[0]) - 1, i] = alpha *\
+                            (((oldmesh[len(oldmesh[0]) - 1, i+1] +\
+                              oldmesh[len(oldmesh[0]) - 1, i-1]) / dx2) +\
+                            2 * oldmesh[len(oldmesh[0]) - 2, i] / dy2)
+        pjvariation = np.absolute(pjmesh[jtest, itest] -\
+                           oldmesh[jtest, itest])
+        oldmesh = pjmesh
+        oldmesh = np.array(oldmesh)
+        pjiteration += 1
+    pjerror = np.absolute(pjmesh[jtest, itest] -\
+                           exactmesh[jtest, itest]) / exactmesh[jtest, itest]
+    return pjmesh, pjiteration, pjerror
+
+
+def gaussseidel(meshparameters):
+    dx, dy, xmesh, ymesh, startmesh, tolerance, exactmesh = meshparameters
+    dx2 = dx**2
+    dy2 = dy**2
+    alpha = dx2 * dy2 / (2*dx2 + 2*dy2)
+    gsmesh = startmesh
+    gsmesh = np.array(gsmesh)
+    oldmesh = startmesh
+    oldmesh = np.array(oldmesh)
+    gsiteration = 0
+    itest = int((len(xmesh[0]) + 1) / 2)
+    jtest = int((len(ymesh[0]) + 1) / 2)
+    gsvariation = 999999.
+    while gsvariation >= tolerance or gsiteration < itest * 10:
+        for i in range(1, len(gsmesh[0]) - 1):
+            for j in range(1, len(gsmesh[0]) - 1):
+                gsmesh[j][i] = alpha *\
+                    ((gsmesh[j, i+1] + gsmesh[j, i-1]) / dx2 +
+                      (gsmesh[j+1, i] + gsmesh[j-1, i]) / dy2)
+            gsmesh[0][i] = alpha *\
+                ((gsmesh[0, i+1] + gsmesh[0, i-1]) / dx2 +\
+                  2 * gsmesh[1, i] / dy2)
+            gsmesh[len(gsmesh[0]) - 1][i] = alpha *\
+                (((gsmesh[len(gsmesh[0]) - 1, i+1] +\
+                   gsmesh[len(gsmesh[0]) - 1, i-1]) / dx2) +\
+                2 * gsmesh[len(gsmesh[0]) - 2, i] / dy2)
+        gsvariation = np.absolute(gsmesh[jtest, itest] -\
+                                  oldmesh[jtest, itest])
+        oldmesh = gsmesh
+        oldmesh = np.array(oldmesh)
+        gsiteration += 1
+    gserror = np.absolute(gsmesh[jtest, itest] -\
+                          exactmesh[jtest, itest]) / exactmesh[jtest, itest]
+    return gsmesh, gsiteration, gserror
+
+
+def SOR(meshparameters, weight):
+    dx, dy, xmesh, ymesh, startmesh, tolerance, exactmesh = meshparameters
+    dx2 = dx**2
+    dy2 = dy**2
+    alpha = dx2 * dy2 / (2*dx2 + 2*dy2)
+    SORmesh = startmesh
+    SORmesh = np.array(SORmesh)
+    oldmesh = startmesh
+    oldmesh = np.array(oldmesh)
+    SORiteration = 0
+    itest = int((len(xmesh[0]) + 1) / 2)
+    jtest = int((len(ymesh[0]) + 1) / 2)
+    SORvariation = 999999.
+    while SORvariation >= tolerance or SORiteration < itest * 10:
+        for i in range(1, len(SORmesh[0]) - 1):
+            for j in range(1, len(SORmesh[0]) - 1):
+                SORmesh[j][i] = alpha *\
+                  ((weight*SORmesh[j, i+1] + (1-weight)*oldmesh[j, i+1] +
+                    weight*SORmesh[j, i-1] + (1-weight)*oldmesh[j, i-1]) / dx2 +
+                   (weight*SORmesh[j+1, i] + (1-weight)*oldmesh[j+1, i] +
+                    weight*SORmesh[j-1, i] + (1-weight)*oldmesh[j-1, i]) / dy2)
+            SORmesh[0][i] = alpha *\
+                (((weight*SORmesh[0, i+1] + (1-weight)*oldmesh[0, i+1] +
+                   weight*SORmesh[0, i-1] + (1-weight)*oldmesh[0, i-1]) / dx2) +
+                 2 * (weight*SORmesh[1, i] + (1-weight)*oldmesh[1, i])/ dy2)
+            SORmesh[len(SORmesh[0]) - 1][i] = alpha *\
+                (((weight*SORmesh[len(SORmesh[0]) - 1, i+1] +
+                   (1-weight)*oldmesh[len(SORmesh[0]) - 1, i+1] +
+                   weight*SORmesh[len(SORmesh[0]) - 1, i-1] +
+                   (1-weight)*oldmesh[len(SORmesh[0]) - 1, i-1]) / dx2) +
+                 2 * (weight*SORmesh[len(SORmesh[0]) - 2, i] +
+                      (1-weight)*oldmesh[len(SORmesh[0]) - 2, i])/ dy2)
+        SORvariation = np.absolute(SORmesh[jtest, itest] -\
+                                  oldmesh[jtest, itest])
+        oldmesh = SORmesh
+        oldmesh = np.array(oldmesh)
+        SORiteration += 1
+    SORerror = np.absolute(SORmesh[jtest, itest] -\
+                          exactmesh[jtest, itest]) / exactmesh[jtest, itest]
+    return SORmesh, SORiteration, SORerror
+
+
+
+# Set up all of the initial conditions and variables
+
+# Spacial parameters
+xmin = 0.
+xmax = 2.
+ymin = 0.
+ymax = 1.
+
+# Mesh size parameters
+uniformmeshnum = 21
+Nx = uniformmeshnum
+Ny = uniformmeshnum
+
+# Approximation parameters
+tolerance = 0.00005
+
+# Set up the mesh coordinates and temperature values
+mesh = []
+xcoords = np.linspace(xmin, xmax, Nx)
+ycoords = np.linspace(ymin, ymax, Ny)
+xmesh, ymesh = np.meshgrid(xcoords, ycoords)
+tmesh = np.zeros((Ny, Nx))
+
+# Find dx and dy so that it doesn't need to be computed so often
+dx = (xmax - xmin) / (Nx - 1)
+dy = (ymax - ymin) / (Ny - 1)
+
+# Set up all of the boundary conditions
+leftside = 0
+for i in range(Ny):
+    tmesh[i][Nx - 1] = ymesh[i][Nx - 1]
+    tmesh[i][0] = leftside
+
+# Get the exact solution solution
+exacttempmesh = exactsolution(xmesh, ymesh)
+
+# Pack all the parameters in order to send to the functions above.
+meshparameters = [dx, dy, xmesh, ymesh, tmesh, tolerance, exacttempmesh]
+
+# Print out the number of iterations required for each method.
+ptjacobiest, ptjiterations, pjerror = pointjacobi(meshparameters)
+print('Point-Jacobi Iterations Needed: {}'.format(ptjiterations))
+print('Point-Jacobi Percent Error: {:.2f}'.format(pjerror * 100.))
+gsest, gsiterations, gserror = gaussseidel(meshparameters)
+print()
+print('Gauss-Seidel Iterations Needed: {}'.format(gsiterations))
+print('Gauss-Seidel Percent Error: {:.2f}'.format(gserror * 100.))
+SORest, SORiterations, SORerror = SOR(meshparameters, 1.8)
+print()
+print('SOR Iterations Needed: {}'.format(SORiterations))
+print('SOR Percent Error: {:.2f}'.format(SORerror * 100.))
+
+plt.figure(1)
+plt.title('Exact Solution', fontsize=14)
+plt.xlabel('x Coordinate', fontsize=11)
+plt.ylabel('y Coordinate', fontsize=11)
+exactplt = plt.contour(xmesh, ymesh, exacttempmesh, 16)
+exactbar = plt.colorbar(exactplt)
+exactbar.set_label('Temperature (deg C)', fontsize=11)
+plt.grid(b=True, which='both')
+
+plt.figure(2)
+plt.title('Point-Jacobi Approximation', fontsize=14)
+plt.xlabel('x Coordinate', fontsize=11)
+plt.ylabel('y Coordinate', fontsize=11)
+pjplt = plt.contour(xmesh, ymesh, ptjacobiest, 16)
+pjbar = plt.colorbar(pjplt)
+pjbar.set_label('Temperature (deg C)', fontsize=11)
+plt.grid(b=True, which='both')
+
+plt.figure(3)
+plt.title('Gauss-Seidel Approximation', fontsize=14)
+plt.xlabel('x Coordinate', fontsize=11)
+plt.ylabel('y Coordinate', fontsize=11)
+gsplt = plt.contour(xmesh, ymesh, gsest, 16)
+gsbar = plt.colorbar(gsplt)
+gsbar.set_label('Temperature (deg C)', fontsize=11)
+plt.grid(b=True, which='both')
+plt.show()
+
+plt.figure(4)
+plt.title('SOR Approximation', fontsize=14)
+plt.xlabel('x Coordinate', fontsize=11)
+plt.ylabel('y Coordinate', fontsize=11)
+SORcontour = plt.contour(xmesh, ymesh, SORest, 16)
+SORcolorbar = plt.colorbar(SORcontour)
+SORcolorbar.set_label('Temperature (deg C)', fontsize=11)
+plt.grid(b=True, which='both')

@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Nov 13 21:45:56 2016
+
+@author: andrewalferman
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def leapfrog(Ym1, Y, A, dt):
+    return Ym1 + 2*dt*np.dot(A, Y)
+
+
+def trapezoidal(Y, A, dt):
+    Im = np.linalg.inv(np.eye(2) - dt*0.5*A)
+    Ip = np.eye(2) + dt*0.5*A
+    return np.dot(np.dot(Im, Ip), Y)
+
+
+def fwdeuler(Y, A, dt):
+    return np.dot((np.eye(2) + dt*A), Y)
+
+
+def exactsoln(omega, t):
+    return np.cos(omega * t) + 0.25*np.sin(omega * t)
+
+# Set up all of the initial conditions and problem parameters
+omega = 4.0
+dt = 0.0015
+t = 0.0
+y0 = 1.0
+y0p = 0.0
+Y0 = [[y0], [y0p]]
+Y0 = np.array(Y0)
+
+# Set up the Jacobian matrix for this particular problem
+A = [[0.0, 1.0], [-1.0 * omega**2, 0.0]]
+A = np.array(A)
+
+# Set up lists to log all of the values for plotting later
+Yll, Ylt, Ylm, tl, ye, errorl = [1], [1], [], [0], [1], [0]
+# Run a forward Euler approximation for the first timestep only
+Yl, Yt, Ym, Ylm1, Yold = Y0, Y0, Y0, Y0, Y0
+Yl = fwdeuler(Yl, A, dt)
+Yt = trapezoidal(Yt, A, dt)
+t += dt
+while t <= 6:
+    ye.append(exactsoln(omega, t))
+    Yll.append(Yl[0])
+    Ylt.append(Yt[0])
+    tl.append(t)
+    Ylnew = leapfrog(Ylm1, Yl, A, dt)
+    Yt = trapezoidal(Yt, A, dt)
+    Ylm1 = Yl
+    Yl = Ylnew
+    t += dt
+plt.figure(1)
+plt.plot(tl, Yll, label='Leapfrog')
+plt.plot(tl, Ylt, label='Trapezoidal')
+plt.plot(tl, ye, label='Exact Solution')
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.xlabel('Time')
+plt.ylabel('Y Value')
+plt.title('Comparison of Schemes (dt = 0.15)')
+
+Ymold = 0
+t = 0
+selector = 0
+while t <= 6:
+    if selector != 2:
+        Ym = trapezoidal(Ym, A, dt)
+        selector += 1
+    else:
+        Ym = leapfrog(Ymm1, Ym, A, dt)
+        selector = 0
+    Ylm.append(Ym[0])
+    Ymm1 = Ymold
+    Ymold = Ym
+    t += dt
+
+plt.figure(2)
+plt.plot(tl, Ylm, label='Mixed Scheme')
+plt.plot(tl, ye, label='Exact Solution')
+plt.legend(bbox_to_anchor=(1, 1), loc=2)
+plt.xlabel('Time')
+plt.ylabel('Y Value')
+plt.title('Mixed Scheme vs. Exact Solution')
+plt.show()
