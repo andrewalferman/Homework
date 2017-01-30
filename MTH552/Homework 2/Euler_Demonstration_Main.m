@@ -9,9 +9,7 @@ U0 = [1;2]; % Specify column vector of initial values
 NSTEP=8400; % Specify number of steps.
            %Stepsize Delta_t = (tfinal-t0)/NSTEP.
 
-% Multiplier used to figure out the accuracy by increasing the number of
-% step sizes
-convergenceacc = 1000; 
+convergenceacc = 1000;
 
 TSPAN = [t0,tfinal];
 [t,U] = eulerw17(odefun,TSPAN,U0,NSTEP);
