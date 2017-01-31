@@ -1,10 +1,10 @@
 % Main routine (driver) for Euler method demonstration
-odefun = 'myode1';  %Specify name of user supplied
-                    % function M-file with rhs of ode
-t0 = 0; tfinal = 2*pi; % Specify initial and final times
-U0 = [-1;3]; % Specify column vector of initial values
-NSTEP=200;  % Specify number of steps.
-            %Stepsize Delta_t = (tfinal-t0)/NSTEP.
+odefun = 'myode1';      % Specify name of user supplied
+                        % function M-file with rhs of ode
+t0 = 0; tfinal = 2*pi;  % Specify initial and final times
+U0 = [-1;3];            % Specify column vector of initial values
+NSTEP=200;              % Specify number of steps.
+                        % Stepsize Delta_t = (tfinal-t0)/NSTEP.
 
             
 TSPAN = [t0,tfinal];

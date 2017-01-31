@@ -1,17 +1,15 @@
-function [t,U] = eulerw17(odefun, TSPAN ,U0,NSTEP, RKmethod);
+function [t,U] = eulerw17(odefun, TSPAN ,U0,NSTEP);
 T0 = TSPAN(1); TFINAL = TSPAN(2);
 dt = (TFINAL-T0)/NSTEP;
 m = length(U0);
 U = zeros(m,NSTEP+1);
 U(:,1) = U0;
 t = T0:dt:TFINAL;
-if RKmethod == 'RK4'
-    A = [0 0 0 0; 0.5 0 0 0; 0 0.5 0 0; 0 0 1 0];
-    b = [1/6;1/3;1/3;1/6];
-    c = [0;0.5;0.5;1];
-end
+A = [0 0 0 0; 0.5 0 0 0; 0 0.5 0 0; 0 0 1 0];
+b = [1/6;1/3;1/3;1/6];
+c = [0;0.5;0.5;1];
 for k = 1:NSTEP
-    U(:,k+1) = RKexplicitstep(odefun,t(k),U(:,k),dt, A, b, c);
+    U(:,k+1) = RKexplici(odefun,t(k),U(:,k),dt);
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
