@@ -7,7 +7,7 @@ odefun = 'myode1';      % Specify name of user supplied
 RKmethod = 'RK4';        % Specify the RK method, as applicable
 t0 = 0; tfinal = 1;     % Specify initial and final times
 U0 = [1;2];             % Specify column vector of initial values
-NSTEP=1                % Specify number of steps.
+NSTEP=2                % Specify number of steps.
                         % Stepsize Delta_t = (tfinal-t0)/NSTEP.
 
 
