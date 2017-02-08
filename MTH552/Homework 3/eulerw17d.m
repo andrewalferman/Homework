@@ -19,7 +19,21 @@ elseif strcmp(method,'ExplicitEuler')
     for k = 1:NSTEP
         U(:,k+1) = eulerstep(odefun,t(k),U(:,k),dt);
     end
-elseif strcmp(method,'RK4onestep')
+elseif strcmp(method,'TwostepEuler')
+    A = [0 0; 0.5 0];
+    b = [0.5; 0.5];
+    c = [0; 0.5];
+    for k = 1:NSTEP
+        U(:,k+1) = RKexplicitstep(odefun,t(k),U(:,k),dt,A,b,c);
+    end
+elseif strcmp(method,'TestRK')
+    A = [0 0; 0.5 0.5];
+    b = [0.5; 0.5];
+    c = [0; 1];
+    for k = 1:NSTEP
+        U(:,k+1) = RKexplicitstep(odefun,t(k),U(:,k),dt,A,b,c)
+    end    
+elseif strcmp(method,'RK1')
     A = 0;
     b = 1;
     c = 0;
@@ -58,6 +72,13 @@ function yprime = myode1(t,y)
 yprime = zeros(size(y));
 yprime(1) = y(2);
 yprime(2) = -y(1);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function yprime = testode1(t,y)
+% Implements ODE y'= -y as a first order system
+yprime = zeros(size(y));
+yprime(1) = -y(1);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
