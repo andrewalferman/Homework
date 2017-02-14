@@ -1,4 +1,4 @@
-function [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method)
+function [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method,params)
 T0 = TSPAN(1); TFINAL = TSPAN(2);
 dt = (TFINAL-T0)/NSTEP;
 m = length(U0);
@@ -10,16 +10,16 @@ if strcmp(method,'RK4')
     b = [1/6;1/3;1/3;1/6];
     c = [0;0.5;0.5;1];
     for k = 1:NSTEP
-        U(:,k+1) = RKexplicitstep(odefun,t(k),U(:,k),dt,A,b,c);
+        U(:,k+1) = RKexplicitstep(odefun,t(k),U(:,k),dt,A,b,c,params);
     end
 elseif strcmp(method,'ExplicitEuler')
     A = 0;
     b = 1;
     c = 0;
     for k = 1:NSTEP
-        U(:,k+1) = RKexplicitstep(odefun,t(k),U(:,k),dt);
+        U(:,k+1) = eulerstep(odefun,t(k),U(:,k),dt);
     end
-if strcmp(method,'RK4onestep')
+elseif strcmp(method,'RK1')
     A = 0;
     b = 1;
     c = 0;
@@ -61,7 +61,17 @@ yprime(2) = -y(1);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function U = RKexplicitstep(odefun,t,U0,dt,A,b,c)
+function yprime = homework2(t,y)
+% Implements ODE from Homework 2 Problem 3 as a first order system
+yprime = zeros(size(y));
+yprime(1) = y(5);
+yprime(2) = y(6);
+yprime(5) = y(7);
+yprime(6) = y(8);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function U = RKexplicitstep(odefun,t,U0,dt,A,b,c,params)
 % One step of a general explicit Runge Kutta method
 % A is assumed to be strictly lower triangular
 % b and c must be column vectors
@@ -75,6 +85,15 @@ for j = 2:r
      % Y = U0 + dt*sum_{l=1}^{j-1} a_{jl}K_l
     K(:,j) = feval(odefun,t + c(j)*dt, Y);
 end
-
 U = U0 + dt*K*b;
+if odefun == 'homework2'
+    mu = params(1);
+    muhat = params(2);
+    U(1) = U0(1) + dt*U0(5) + 0.5*(dt^2)* U0(7);
+    U(2) = U0(2) + dt*U0(6) + 0.5*(dt^2)* U0(8);
+    U(3) = ((U(1) + mu)^2 + U(2)^2)^1.5;
+    U(4) = ((U(1) - muhat)^2 + U(2))^1.5;
+    U(7) = U(1) + 2*U(6) - muhat*((U(1)+mu)/U(3)) - mu*((U(1)-muhat)/U(4));
+    U(8) = U(2) - 2*U(5) - muhat*U(2)/U(3) - mu*U(2)/U(4);
+end
 end

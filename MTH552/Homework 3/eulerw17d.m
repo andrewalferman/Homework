@@ -19,7 +19,7 @@ elseif strcmp(method,'ExplicitEuler')
     for k = 1:NSTEP
         U(:,k+1) = eulerstep(odefun,t(k),U(:,k),dt);
     end
-elseif strcmp(method,'RK4onestep')
+elseif strcmp(method,'RK1')
     A = 0;
     b = 1;
     c = 0;
