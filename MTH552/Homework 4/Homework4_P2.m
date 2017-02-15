@@ -35,7 +35,7 @@ elseif (strcmp(method,'ExplicitEuler') || strcmp(method,'RK1'))
     b = 1;
     c = 0;
 elseif strcmp(method,'HW2')
-    A = [0 0; 0.5 0.5];
+    A = [0 0; 1 0];
     b = [0.5;0.5];
     c = [0;1];
 end

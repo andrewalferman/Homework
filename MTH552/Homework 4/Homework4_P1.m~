@@ -10,10 +10,10 @@ close all
 odefun = 'orbitODE'; 
 % Specify the method to be used
 % Options are ExplicitEuler, RK1, RK4, HW2
-method = 'RK4';
+method = 'HW2';
 % Specify if you want automatic time steps, and if so, the tolerance
 autostep = true;
-TOL = 1.0*(10^-10);
+TOL = 1.0*(10^-4);
 steps = 0;
 % If automatic time steps are not to be used, specify the number of steps
 NSTEP=5*(10^5);
