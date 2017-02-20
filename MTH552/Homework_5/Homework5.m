@@ -14,7 +14,7 @@ method = 'ODE45v4';
 % Specify if you want automatic time steps, and if so, the tolerance
 % autostep is only applicable as long as ODE45v4 isn't selected
 autostep = true;
-TOL = 1.0*(10^-8);
+TOL = 1.0*(10^-4);
 global steps;
 steps = 0;
 % If automatic time steps are not to be used, specify the number of steps
@@ -31,7 +31,7 @@ mu = 0.012277471;
 
 % Build the Butcher array based on the method selected
 % Only applicable as long as ODE45v4 isn't selected
-% This is all probably bad programming practice, but it works.
+% This is all probably bad programming practice, but it works and was easy.
 if (strcmp(method, 'ODE45v4') ~= 1)
     if strcmp(method, 'RK4')
         A = [0 0 0 0; 0.5 0 0 0; 0 0.5 0 0; 0 0 1 0];
@@ -70,13 +70,18 @@ if (strcmp(method, 'ODE45v4') ~= 1)
         [t,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder,mu);
     end
 else
-    [t,U] = ode45v4(odefun,t0,tfinal,U0,TOL,trace,mu);
+    [t,U] = ode45v4(odefun,t0,tfinal,U0,TOL,trace);
 end
-    
+  
 % plot numerical solution;
 figure;
 hold off;
-plot(U(1,:),U(2,:),'b');
+% U in ODE45v4 and the other methods annoyingly are transposed
+if strcmp(method, 'ODE45v4')
+    plot(U(:,1),U(:,2),'b');
+else
+    plot(U(1,:),U(2,:),'b');
+end
 xlabel('u_1')
 ylabel('u_2')
 titlestr = sprintf(['Method = ' method ...

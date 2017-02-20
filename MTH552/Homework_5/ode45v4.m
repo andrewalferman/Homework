@@ -1,4 +1,4 @@
-function [tout, yout] = ode45v4(ypfun, t0, tfinal, y0, tol, trace, mu)
+function [tout, yout] = ode45v4(ypfun, t0, tfinal, y0, tol, trace)
 %ODE45	Solve differential equations, higher order method.
 %	ODE45 integrates a system of ordinary differential equations using
 %	4th and 5th order Runge-Kutta formulas.
@@ -67,10 +67,10 @@ while (t < tfinal) & (t + h > t)
    if t + h > tfinal, h = tfinal - t; end
 
    % Compute the slopes
-   temp = feval(ypfun,t,y,mu);
+   temp = feval(ypfun,t,y);
    f(:,1) = temp(:);
    for j = 1:5
-      temp = feval(ypfun, t+alpha(j)*h, y+h*f*beta(:,j),mu);
+      temp = feval(ypfun, t+alpha(j)*h, y+h*f*beta(:,j));
       f(:,j+1) = temp(:);
    end
 
@@ -112,8 +112,11 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function ypfun = orbitODE(t,y,mu)
+function ypfun = orbitODE(t,y)
 % Implements the ODE from Homework 2 Problem 3 as a first order system
+global steps;
+steps = steps + 1;
+mu = 0.012277471;
 muhat = 1.0 - mu;
 D1 = ((y(1) + mu)^2 + y(2)^2)^1.5;
 D2 = ((y(1) - muhat)^2 + y(2)^2)^1.5;
