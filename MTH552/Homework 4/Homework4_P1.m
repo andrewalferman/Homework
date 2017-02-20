@@ -13,7 +13,8 @@ odefun = 'orbitODE';
 method = 'RK4';
 % Specify if you want automatic time steps, and if so, the tolerance
 autostep = true;
-TOL = 1.0*(10^-10);
+TOL = 3.0*(10^-3);
+global steps;
 steps = 0;
 % If automatic time steps are not to be used, specify the number of steps
 NSTEP=5*(10^5);
@@ -61,7 +62,7 @@ end
 if autostep == false
     [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method,A,b,c,mu);
 else
-    [t,U,steps] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder,mu,steps);
+    [t,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder,mu);
 end
     
 % plot numerical solution;

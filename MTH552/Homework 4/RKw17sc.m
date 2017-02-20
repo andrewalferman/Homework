@@ -2,7 +2,7 @@
 % This code is applicable to both problems 1 and 2 of Homework 4
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [T,U,steps] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder,mu,steps);
+function [T,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder,mu);
 % RK method with stepsize control using Richardson extrapolation
 % qorder = order of method used
 
@@ -45,7 +45,6 @@ while T(kstep) < TFINAL
         dt = max(sf*((TOL/locerr)^(1/q1))*dt,dtmin); %new value for dt 
         dt = min(dt,TFINAL-t);
     end
-    steps = steps + 1;
 end
 end
 
@@ -53,7 +52,9 @@ end
 
 function U = eulerstep(odefun,t,U0,dt,mu)
 % Takes one step of the foward Euler method
+global steps;
 U = U0 + dt*feval(odefun,t,U0,mu);
+steps = steps + 1;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,6 +77,7 @@ function U = RKexplicitstep(odefun,t,U0,dt,A,b,c,mu)
 % A is assumed to be strictly lower triangular
 % b and c must be column vectors
 %
+global steps;
 r = length(b);
 m = length(U0);
 K = zeros(m,r);%matrix whose j-th column is K_j
@@ -85,8 +87,8 @@ for j = 2:r
      % Y = U0 + dt*sum_{l=1}^{j-1} a_{jl}K_l
     K(:,j) = feval(odefun,t + c(j)*dt, Y,mu);
 end
-
 U = U0 + dt*K*b;
+steps = steps + 1;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
