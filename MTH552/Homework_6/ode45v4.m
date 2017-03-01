@@ -45,7 +45,6 @@ if nargin < 5, tol = 1.e-6; end
 if nargin < 6, trace = 0; end
 
 % Initialization
-global steps;
 t = t0;
 hmax = (tfinal - t)/16;
 h = hmax/8;
@@ -115,6 +114,8 @@ end
 
 function ypfun = orbitODE(t,y)
 % Implements the ODE from Homework 2 Problem 3 as a first order system
+global steps;
+steps = steps + 1;
 mu = 0.012277471;
 muhat = 1.0 - mu;
 D1 = ((y(1) + mu)^2 + y(2)^2)^1.5;
