@@ -1,38 +1,46 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This code is applicable to problem 1 of Homework 5
+% This code is applicable to problem 2 of Homework 6
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all
 close all
 
-% Main routine (driver) for orbital ODE problem
+% Main routine (driver) for the Oregonator
+% This was built off of all the previously used code, so all functions
+% worked on in this class so far can be accessed from here.
 % Specify name of user supplied function M-file with rhs of ode
-odefun = 'orbitODE'; 
+odefun = 'Oregonator'; 
 % Specify the method to be used
-% Options are ExplicitEuler, RK1, RK4, HW2, and ODE45v4
-method = 'ODE45v4';
+% Options are ExplicitEuler, RK1, RK4, HW2, ODE45v4, and the several of the
+% default Matlab integrators
+method = 'ode15s';
 % Specify if you want automatic time steps, and if so, the tolerance
 % autostep is only applicable as long as ODE45v4 isn't selected
 autostep = true;
-TOL = 1.0*(10^-6);
-global steps;
-steps = 0;
+TOL = 1e-10;
+global count;
+count = 0;
 % If automatic time steps are not to be used, specify the number of steps
 NSTEP=5*(10^5);
 % If ODE45v4 is to be used, state whether or not you want every step output
 trace = 0;
 % Specify the initial conditions
 % Specify initial and final times
-t0 = 0; tfinal = 17.1;
+t0 = 0; tfinal = 1;
 TSPAN = [t0,tfinal];
 % Specify column vector of initial values
-U0 = [0.994;0.0;0.0;-2.00158510637908252240537862224]; 
-mu = 0.012277471;
+U0 = [0.06; 3.3e-7; 5.01e-11; 0.03; 2.4e-8];
+
+% Specify any options that you want for ode45, ode23s, ode15s, etc.
+% I didn't like the notion that ode45 couldn't handle the Oregonator, so I
+% tweaked the tolerances until it worked.
+OPTIONS = odeset('RelTol', 1e-8, 'AbsTol', 1e-10, 'NonNegative', 1:5);
 
 % Build the Butcher array based on the method selected
 % Only applicable as long as ODE45v4 isn't selected
 % This is all probably bad programming practice, but it works and was easy.
-if (strcmp(method, 'ODE45v4') ~= 1)
+if (strcmp(method, 'ExplicitEuler')|strcmp(method, 'RK1')|...
+        strcmp(method, 'RK4')|strcmp(method, 'HW2') )
     if strcmp(method, 'RK4')
         A = [0 0 0 0; 0.5 0 0 0; 0 0.5 0 0; 0 0 1 0];
         b = [1/6;1/3;1/3;1/6];
@@ -65,25 +73,37 @@ if (strcmp(method, 'ODE45v4') ~= 1)
     end
     % Call the solver, based on if you want automatic time step or not
     if autostep == false
-        [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method,A,b,c,mu);
+        [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method,A,b,c);
     else
-        [t,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder,mu);
+        [t,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder);
     end
-else
+elseif (strcmp(method, 'ODE45v4'))
     [t,U] = ode45v4(odefun,t0,tfinal,U0,TOL,trace);
+elseif (strcmp(method, 'ode45'))
+    [t,U] = ode45(odefun,TSPAN,U0,OPTIONS);
+elseif (strcmp(method, 'ode15s'))
+    [t,U] = ode15s(odefun,TSPAN,U0,OPTIONS);
+elseif (strcmp(method, 'ode23s'))
+    [t,U] = ode23s(odefun,TSPAN,U0,OPTIONS);
 end
-  
+
+timesteps = length(t);
+
+tvector = [t0:tfinal:timesteps-1];
+
 % plot numerical solution;
 figure;
 hold off;
-% U in ODE45v4 and the other methods annoyingly are transposed
-if strcmp(method, 'ODE45v4')
-    plot(U(:,1),U(:,2),'b');
-else
-    plot(U(1,:),U(2,:),'b');
+% U in the methods used earlier are annoyingly transposed...
+for i = 1:5
+    subplot(2,3,i)
+    semilogy(t,U(:,i))
+    titlestr = sprintf('c_{%i}',i);
+    title(titlestr)
 end
-xlabel('u_1')
-ylabel('u_2')
+subplot(2,3,6)
+plot(tvector,t)
+title('t_n Vector')
 titlestr = sprintf(['Method = ' method ...
-    ', Tolerance = %2.0e, Steps = %i'],TOL,steps);
-title(titlestr)
+    ', Time Steps = %i, Evaluations = %i'],timesteps,count);
+suptitle(titlestr)

@@ -1,0 +1,291 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework6</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-02-28"><meta name="DC.source" content="Homework6.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% This code is applicable to problem 2 of Homework 6</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+clear <span class="string">all</span>
+close <span class="string">all</span>
+
+<span class="comment">% Main routine (driver) for the Oregonator</span>
+<span class="comment">% This was built off of all the previously used code, so all functions</span>
+<span class="comment">% worked on in this class so far can be accessed from here.</span>
+<span class="comment">% Specify name of user supplied function M-file with rhs of ode</span>
+odefun = <span class="string">'Oregonator'</span>;
+<span class="comment">% Specify the method to be used</span>
+<span class="comment">% Options are ExplicitEuler, RK1, RK4, HW2, ODE45v4, and the default Matlab</span>
+<span class="comment">% integrators</span>
+method = <span class="string">'ode15s'</span>;
+<span class="comment">% Specify if you want automatic time steps, and if so, the tolerance</span>
+<span class="comment">% autostep is only applicable as long as ODE45v4 isn't selected</span>
+autostep = true;
+TOL = 1e-10;
+<span class="keyword">global</span> count;
+count = 0;
+<span class="comment">% If automatic time steps are not to be used, specify the number of steps</span>
+NSTEP=5*(10^5);
+<span class="comment">% If ODE45v4 is to be used, state whether or not you want every step output</span>
+trace = 0;
+<span class="comment">% Specify the initial conditions</span>
+<span class="comment">% Specify initial and final times</span>
+t0 = 0; tfinal = 1;
+TSPAN = [t0,tfinal];
+<span class="comment">% Specify column vector of initial values</span>
+U0 = [0.06; 3.3e-7; 5.01e-11; 0.03; 2.4e-8];
+
+<span class="comment">% Specify any options that you want for ode45, ode23s, ode15s, etc.</span>
+<span class="comment">% I didn't like the notion that ode45 couldn't handle the Oregonator, so I</span>
+<span class="comment">% tweaked the tolerances until it worked.</span>
+OPTIONS = odeset(<span class="string">'RelTol'</span>, 1e-8, <span class="string">'AbsTol'</span>, 1e-10, <span class="string">'NonNegative'</span>, 1:5);
+
+<span class="comment">% Build the Butcher array based on the method selected</span>
+<span class="comment">% Only applicable as long as ODE45v4 isn't selected</span>
+<span class="comment">% This is all probably bad programming practice, but it works and was easy.</span>
+<span class="keyword">if</span> (strcmp(method, <span class="string">'ExplicitEuler'</span>)|strcmp(method, <span class="string">'RK1'</span>)|<span class="keyword">...</span>
+        strcmp(method, <span class="string">'RK4'</span>)|strcmp(method, <span class="string">'HW2'</span>) )
+    <span class="keyword">if</span> strcmp(method, <span class="string">'RK4'</span>)
+        A = [0 0 0 0; 0.5 0 0 0; 0 0.5 0 0; 0 0 1 0];
+        b = [1/6;1/3;1/3;1/6];
+        c = [0;0.5;0.5;1];
+    <span class="keyword">elseif</span> (strcmp(method,<span class="string">'ExplicitEuler'</span>) || strcmp(method,<span class="string">'RK1'</span>))
+        A = 0;
+        b = 1;
+        c = 0;
+    <span class="keyword">elseif</span> strcmp(method,<span class="string">'HW2'</span>)
+        A = [0 0; 1 0];
+        b = [0.5;0.5];
+        c = [0;1];
+    <span class="keyword">end</span>
+    <span class="comment">% Series of if statements that will return the order of the RK method used</span>
+    <span class="keyword">if</span> round(sum(b),4) == 1.0000
+        qorder = 1;
+        <span class="keyword">if</span> round(b.'*c,4) == 0.5000
+            qorder = 2;
+            <span class="keyword">if</span> round(b.'*(c.^2),4) == round(1/3,4) &amp;&amp; <span class="keyword">...</span>
+               round(sum(b'.*sum(A'.*c)),4) == round(1/6,4)
+                qorder = 3;
+                <span class="keyword">if</span> round(b.'*(c.^3),4) == 1/4 &amp;&amp; <span class="keyword">...</span>
+                   round(sum(b'.*c'.*sum(A'.*c)),4) == 1/8 &amp;&amp; <span class="keyword">...</span>
+                   round(sum(b'.*sum(A'.*c.^2)),4) == round(1/12,4) &amp;&amp; <span class="keyword">...</span>
+                   round(sum(A.*b)*sum(A'.*c)',4) == round(1/24,4)
+                    qorder = 4;
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="comment">% Call the solver, based on if you want automatic time step or not</span>
+    <span class="keyword">if</span> autostep == false
+        [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method,A,b,c);
+    <span class="keyword">else</span>
+        [t,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder);
+    <span class="keyword">end</span>
+<span class="keyword">elseif</span> (strcmp(method, <span class="string">'ODE45v4'</span>))
+    [t,U] = ode45v4(odefun,t0,tfinal,U0,TOL,trace);
+<span class="keyword">elseif</span> (strcmp(method, <span class="string">'ode45'</span>))
+    [t,U] = ode45(odefun,TSPAN,U0,OPTIONS);
+<span class="keyword">elseif</span> (strcmp(method, <span class="string">'ode15s'</span>))
+    [t,U] = ode15s(odefun,TSPAN,U0,OPTIONS);
+<span class="keyword">elseif</span> (strcmp(method, <span class="string">'ode23s'</span>))
+    [t,U] = ode23s(odefun,TSPAN,U0,OPTIONS);
+<span class="keyword">end</span>
+
+timesteps = length(t);
+
+tvector = [t0:tfinal:timesteps-1];
+
+<span class="comment">% plot numerical solution;</span>
+figure;
+hold <span class="string">off</span>;
+<span class="comment">% U in the methods used earlier are annoyingly transposed...</span>
+<span class="keyword">for</span> i = 1:5
+    subplot(2,3,i)
+    semilogy(t,U(:,i))
+    titlestr = sprintf(<span class="string">'c_{%i}'</span>,i);
+    title(titlestr)
+<span class="keyword">end</span>
+subplot(2,3,6)
+plot(tvector,t)
+title(<span class="string">'t_n Vector'</span>)
+titlestr = sprintf([<span class="string">'Method = '</span> method <span class="keyword">...</span>
+    <span class="string">', Time Steps = %i, Evaluations = %i'</span>],timesteps,count);
+suptitle(titlestr)
+</pre><img vspace="5" hspace="5" src="Homework6_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This code is applicable to problem 2 of Homework 6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clear all
+close all
+
+% Main routine (driver) for the Oregonator
+% This was built off of all the previously used code, so all functions
+% worked on in this class so far can be accessed from here.
+% Specify name of user supplied function M-file with rhs of ode
+odefun = 'Oregonator'; 
+% Specify the method to be used
+% Options are ExplicitEuler, RK1, RK4, HW2, ODE45v4, and the default Matlab
+% integrators
+method = 'ode15s';
+% Specify if you want automatic time steps, and if so, the tolerance
+% autostep is only applicable as long as ODE45v4 isn't selected
+autostep = true;
+TOL = 1e-10;
+global count;
+count = 0;
+% If automatic time steps are not to be used, specify the number of steps
+NSTEP=5*(10^5);
+% If ODE45v4 is to be used, state whether or not you want every step output
+trace = 0;
+% Specify the initial conditions
+% Specify initial and final times
+t0 = 0; tfinal = 1;
+TSPAN = [t0,tfinal];
+% Specify column vector of initial values
+U0 = [0.06; 3.3e-7; 5.01e-11; 0.03; 2.4e-8];
+
+% Specify any options that you want for ode45, ode23s, ode15s, etc.
+% I didn't like the notion that ode45 couldn't handle the Oregonator, so I
+% tweaked the tolerances until it worked.
+OPTIONS = odeset('RelTol', 1e-8, 'AbsTol', 1e-10, 'NonNegative', 1:5);
+
+% Build the Butcher array based on the method selected
+% Only applicable as long as ODE45v4 isn't selected
+% This is all probably bad programming practice, but it works and was easy.
+if (strcmp(method, 'ExplicitEuler')|strcmp(method, 'RK1')|...
+        strcmp(method, 'RK4')|strcmp(method, 'HW2') )
+    if strcmp(method, 'RK4')
+        A = [0 0 0 0; 0.5 0 0 0; 0 0.5 0 0; 0 0 1 0];
+        b = [1/6;1/3;1/3;1/6];
+        c = [0;0.5;0.5;1];
+    elseif (strcmp(method,'ExplicitEuler') || strcmp(method,'RK1'))
+        A = 0;
+        b = 1;
+        c = 0;
+    elseif strcmp(method,'HW2')
+        A = [0 0; 1 0];
+        b = [0.5;0.5];
+        c = [0;1];
+    end
+    % Series of if statements that will return the order of the RK method used
+    if round(sum(b),4) == 1.0000
+        qorder = 1;
+        if round(b.'*c,4) == 0.5000
+            qorder = 2;
+            if round(b.'*(c.^2),4) == round(1/3,4) && ...
+               round(sum(b'.*sum(A'.*c)),4) == round(1/6,4)
+                qorder = 3;
+                if round(b.'*(c.^3),4) == 1/4 && ...
+                   round(sum(b'.*c'.*sum(A'.*c)),4) == 1/8 && ...
+                   round(sum(b'.*sum(A'.*c.^2)),4) == round(1/12,4) && ...
+                   round(sum(A.*b)*sum(A'.*c)',4) == round(1/24,4)
+                    qorder = 4;
+                end
+            end
+        end
+    end
+    % Call the solver, based on if you want automatic time step or not
+    if autostep == false
+        [t,U] = eulerw17d(odefun,TSPAN,U0,NSTEP,method,A,b,c);
+    else
+        [t,U] = RKw17sc(odefun,TSPAN,U0,TOL,A,b,c,qorder);
+    end
+elseif (strcmp(method, 'ODE45v4'))
+    [t,U] = ode45v4(odefun,t0,tfinal,U0,TOL,trace);
+elseif (strcmp(method, 'ode45'))
+    [t,U] = ode45(odefun,TSPAN,U0,OPTIONS);
+elseif (strcmp(method, 'ode15s'))
+    [t,U] = ode15s(odefun,TSPAN,U0,OPTIONS);
+elseif (strcmp(method, 'ode23s'))
+    [t,U] = ode23s(odefun,TSPAN,U0,OPTIONS);
+end
+
+timesteps = length(t);
+
+tvector = [t0:tfinal:timesteps-1];
+
+% plot numerical solution;
+figure;
+hold off;
+% U in the methods used earlier are annoyingly transposed...
+for i = 1:5
+    subplot(2,3,i)
+    semilogy(t,U(:,i))
+    titlestr = sprintf('c_{%i}',i);
+    title(titlestr)
+end
+subplot(2,3,6)
+plot(tvector,t)
+title('t_n Vector')
+titlestr = sprintf(['Method = ' method ...
+    ', Time Steps = %i, Evaluations = %i'],timesteps,count);
+suptitle(titlestr)
+
+##### SOURCE END #####
+--></body></html>
