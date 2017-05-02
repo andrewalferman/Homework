@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 13 13:58:26 2017
+
+@author: andrewalferman
+"""
+
+import numpy as np
+import pint
+
+# Define universal constants
+ureg = pint.UnitRegistry()
+Q_ = ureg.Quantity
+R = 8.3144598 * ureg.joule / (ureg.mol * ureg.kelvin)
+
+# Given values
+P_He_1 = 400 * ureg.kilopascal
+d = 0.2 * ureg.meter
+P_air_1 = 100 * ureg.kilopascal
+th = 5 * ureg.millimeter
+rho_ss = 800 * ureg.kilogram/(ureg.meter**3)
+c_ss = 480 * ureg.joule/(ureg.kilogram*ureg.kelvin)
+K = 4500 * ureg.newton/ureg.meter
+x_1 = 0.3 * ureg.meter
+L = 1.2 * ureg.meter
+T_1 = 290 * ureg.kelvin
+
+# Cross sectional area of the cylinder
+A_cs = 0.25 * np.pi * d**2
+
+# Initial volumes
+V_He_1 = A_cs * x_1
+V_air_1 = A_cs * (L - th - x_1)
+
+# Find the number of mols of each gas
+n_He = (P_He_1 * V_He_1 / (R * T_1)).to(ureg.mol)
+n_air = (P_air_1 * V_air_1 / (R * T_1)).to(ureg.mol)
