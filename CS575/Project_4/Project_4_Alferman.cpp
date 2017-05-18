@@ -12,6 +12,7 @@ float	NowPrecip;		// inches of rain per month
 float	NowTemp;		// temperature this month
 float	NowHeight;		// grain height in inches
 int	NowNumDeer;		// number of deer in the current population
+int Sandwormstrike; // Whether or not a sandworm will attack this month
 
 float tempFactor;
 float precipFactor;
@@ -30,7 +31,7 @@ float AVG_PRECIP_PER_MONTH =		6.0;	// average
 const float AMP_PRECIP_PER_MONTH =		6.0;	// plus or minus
 const float RANDOM_PRECIP =			2.0;	// plus or minus noise
 
-const float AVG_TEMP =				50.0;	// average
+float AVG_TEMP =				50.0;	// average
 const float AMP_TEMP =				20.0;	// plus or minus
 const float RANDOM_TEMP =			10.0;	// plus or minus noise
 
@@ -72,9 +73,6 @@ void Watcher( )
    // based on the current state of the simulation:
 
    // DoneComputing barrier:
-   #pragma omp barrier
-
-   // DoneComputing barrier 2:
    #pragma omp barrier
 
    // DoneAssigning barrier:
@@ -119,42 +117,67 @@ void Watcher( )
 void GrainDeer( )
 {
   growthmos = 0;
+  int tempmos;
   while( NowYear < 2023 )
   {
    // compute a temporary next-value for this quantity
    // based on the current state of the simulation:
-   if (NowNumDeer <= 0)
+
+   // Set tempdeer to the correct initial value for the month
+   tempdeer = NowNumDeer;
+   tempmos = growthmos;
+
+   // Factor in the imminent sandworm strike.  Sandworms attack first.
+   if (Sandwormstrike == 1)
+   {
+     if (tempdeer > 15)
+     {
+       tempdeer -= 10;
+     }
+     else if (tempdeer > 10)
+     {
+       tempdeer -= 5;
+     }
+     else if (tempdeer > 5)
+     {
+       tempdeer -= 2;
+     }
+     else
+     {
+       tempdeer -= 1;
+     }
+   }
+
+   // Added more realistic deer population limitations
+   if (tempdeer <= 0)
    {
      tempdeer = 0;
-     growthmos = 0;
+     tempmos = 0;
    }
-   else if (NowNumDeer == 1 and NowNumDeer<NowHeight)
+   else if (tempdeer == 1 and tempdeer<NowHeight)
    {
      tempdeer = 1;
-     growthmos = 0;
+     tempmos = 0;
    }
-   else if (NowNumDeer < NowHeight)
+   else if (tempdeer < NowHeight)
    {
-     tempdeer = NowNumDeer + 1;
-     growthmos++;
+     tempdeer += 1;
+     tempmos++;
    }
-   else if (NowNumDeer > NowHeight)
+   else if (tempdeer > NowHeight)
    {
-     tempdeer = NowNumDeer - 1;
-     growthmos = 0;
+     tempdeer -= 1;
+     tempmos = 0;
    }
    else
    {
-     tempdeer = NowNumDeer;
-     growthmos = 0;
+     tempmos = 0;
    }
 
    // DoneComputing barrier:
    #pragma omp barrier
+   growthmos = tempmos;
    NowNumDeer = tempdeer;
-
-   // DoneComputing barrier 2:
-   #pragma omp barrier
 
    // DoneAssigning barrier:
    #pragma omp barrier
@@ -177,6 +200,12 @@ void Grain( )
    tempHeight = NowHeight;
    tempHeight += tempFactor * precipFactor * GRAIN_GROWS_PER_MONTH;
    tempHeight -= (float)NowNumDeer * ONE_DEER_EATS_PER_MONTH;
+
+   // Factor in the imminent sandworm strike
+   if (Sandwormstrike == 1)
+   {
+     tempHeight -= 5;
+   }
    if (tempHeight <= 0)
    {
      tempHeight = 0;
@@ -185,9 +214,6 @@ void Grain( )
    // DoneComputing barrier:
    #pragma omp barrier
    NowHeight = tempHeight;
-
-   // DoneComputing barrier 2:
-   #pragma omp barrier
 
    // DoneAssigning barrier:
    #pragma omp barrier
@@ -203,41 +229,32 @@ void Grain( )
 void Sandworm( )
 {
   int monthswithoutstrike = 4;
+  int tempstrike;
+  float tempprecip;
+  float temptemp;
   while( NowYear < 2023 )
   {
    // compute a temporary next-value for this quantity
    // based on the current state of the simulation:
-   AVG_PRECIP_PER_MONTH -= 0.15;
+   tempprecip = AVG_PRECIP_PER_MONTH -= 0.15;
+   temptemp = AVG_TEMP += 0.15;
 
-   // DoneComputing barrier:
-   #pragma omp barrier
    if (growthmos >= 4 and monthswithoutstrike > 8)
    {
      monthswithoutstrike = 0;
-     if (tempdeer > 15)
-     {
-       tempdeer -= 10;
-     }
-     else if (tempdeer > 10)
-     {
-       tempdeer -= 5;
-     }
-     else if (tempdeer > 5)
-     {
-       tempdeer -= 2;
-     }
-     else
-     {
-       tempdeer -= 1;
-     }
-     tempHeight -= 5;
+     tempstrike = 1;
    }
-   monthswithoutstrike++;
+   else
+   {
+     monthswithoutstrike++;
+     tempstrike = 0;
+   }
 
-   // DoneComputing barrier 2:
+   // DoneComputing barrier:
    #pragma omp barrier
-   NowNumDeer = tempdeer;
-   NowHeight = tempHeight;
+   AVG_PRECIP_PER_MONTH = tempprecip;
+   AVG_TEMP = temptemp;
+   Sandwormstrike = tempstrike;
 
    // DoneAssigning barrier:
    #pragma omp barrier

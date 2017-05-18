@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  11 MAY 2017 19:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  18 MAY 2017 12:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1062,6 +1062,13 @@ Package: booktabs 2016/04/27 v1.618033 publication quality tables
 \@lastruleclass=\count281
 \@thisrulewidth=\dimen286
 )
+(/usr/local/texlive/2016/texmf-dist/tex/latex/epigraph/epigraph.sty
+Package: epigraph 2009/09/02 v1.5c typesetting epigraphs
+\beforeepigraphskip=\skip76
+\afterepigraphskip=\skip77
+\epigraphwidth=\skip78
+\epigraphrule=\skip79
+)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/pdfpages/pdfpages.sty
 Package: pdfpages 2016/04/19 v0.5f Insert pages of external PDF documents (AM)
 
@@ -1124,21 +1131,21 @@ les
 Package: lastpage 2015/03/29 v1.2m Refers to last page's name (HMM; JPG)
 )
 (/usr/local/texlive/2016/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
-\fancy@headwidth=\skip76
-\f@ncyO@elh=\skip77
-\f@ncyO@erh=\skip78
-\f@ncyO@olh=\skip79
-\f@ncyO@orh=\skip80
-\f@ncyO@elf=\skip81
-\f@ncyO@erf=\skip82
-\f@ncyO@olf=\skip83
-\f@ncyO@orf=\skip84
+\fancy@headwidth=\skip80
+\f@ncyO@elh=\skip81
+\f@ncyO@erh=\skip82
+\f@ncyO@olh=\skip83
+\f@ncyO@orh=\skip84
+\f@ncyO@elf=\skip85
+\f@ncyO@erf=\skip86
+\f@ncyO@olf=\skip87
+\f@ncyO@orf=\skip88
 )
 (/usr/local/texlive/2016/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2016/03/21 v2.10.2 Sectioning titles
 \ttl@box=\box88
-\beforetitleunit=\skip85
-\aftertitleunit=\skip86
+\beforetitleunit=\skip89
+\aftertitleunit=\skip90
 \ttl@plus=\dimen289
 \ttl@minus=\dimen290
 \ttl@toksa=\toks43
@@ -1149,19 +1156,19 @@ Package: titlesec 2016/03/21 v2.10.2 Sectioning titles
 (./Project_4_Writeup.aux)
 \openout1 = `Project_4_Writeup.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 116.
-LaTeX Font Info:    ... okay on input line 116.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 116.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 118.
+LaTeX Font Info:    ... okay on input line 118.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 118.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
@@ -1253,7 +1260,7 @@ Package caption Info: End \AtBeginDocument code.
 .................................................
 . chemgreek info: "mapping-activated"
 . 
-. Activating mapping `default' on line 116.
+. Activating mapping `default' on line 118.
 .................................................
 \AtBeginShipoutBox=\box90
 
@@ -1267,49 +1274,58 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 )
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 116.
+(lastpage)             ! on input line 118.
 
 <Sandworm_heretics.jpg, id=1, 127.47626pt x 189.70876pt>
 File: Sandworm_heretics.jpg Graphic file (type jpg)
 
 <use Sandworm_heretics.jpg>
-Package pdftex.def Info: Sandworm_heretics.jpg used on input line 123.
-(pdftex.def)             Requested size: 78.78247pt x 117.24768pt.
+Package pdftex.def Info: Sandworm_heretics.jpg used on input line 125.
+(pdftex.def)             Requested size: 89.28947pt x 132.88495pt.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 132.
+
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+Underfull \hbox (badness 3557) in paragraph at lines 134--135
+[]\OT1/ptm/m/n/10 In ad-di-tion to mod-i-fy-ing these ini-tial pa-ram-e-ters, t
+he av-er-age rain-fall per month
+ []
+
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 134.
- <Picture1.pdf, id=2, 627.34375pt x 418.56375pt>
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 136.
+[1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+ <./Sandworm_heretics.jpg>] <Picture1.pdf, id=10, 581.17125pt x 420.57124pt>
 File: Picture1.pdf Graphic file (type pdf)
 
 <use Picture1.pdf>
-Package pdftex.def Info: Picture1.pdf used on input line 150.
-(pdftex.def)             Requested size: 262.61894pt x 175.22714pt.
- [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-
- <./Sandworm_heretics.jpg>]
+Package pdftex.def Info: Picture1.pdf used on input line 159.
+(pdftex.def)             Requested size: 267.86842pt x 193.85016pt.
+ [2 <./Picture1.pdf>]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 161.
- 
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 173.
+ [3] 
 AED: lastpage setting LastPage
-[2 <./Picture1.pdf>] (./Project_4_Writeup.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+[4] (./Project_4_Writeup.aux) ) 
 Here is how much of TeX's memory you used:
- 17332 strings out of 493014
- 315544 string characters out of 6133351
- 398847 words of memory out of 5000000
- 20598 multiletter control sequences out of 15000+600000
- 13727 words of font info for 29 fonts, out of 8000000 for 9000
+ 17446 strings out of 493014
+ 317127 string characters out of 6133351
+ 435954 words of memory out of 5000000
+ 20693 multiletter control sequences out of 15000+600000
+ 17453 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 65i,11n,100p,10380b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/201
-6/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Project_4_Writeup.pdf (2 pages, 72241 bytes).
+ 65i,11n,100p,10380b,382s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dv
+ips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/courier/ucrr8
+a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
+r/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Project_4_Writeup.pdf (4 pages, 104732 bytes).
 PDF statistics:
- 36 PDF objects out of 1000 (max. 8388607)
- 24 compressed objects within 1 object stream
+ 56 PDF objects out of 1000 (max. 8388607)
+ 38 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
