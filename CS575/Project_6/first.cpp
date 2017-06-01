@@ -15,11 +15,11 @@
 #include "cl_platform.h"
 
 
-#ifndef NMB
-#define	NMB			64
+#ifndef NKB
+#define	NKB			64
 #endif
 
-#define NUM_ELEMENTS		NMB*1024*1024
+#define NUM_ELEMENTS		NKB*1024*1024
 
 #ifndef LOCAL_SIZE
 #define	LOCAL_SIZE		64
@@ -217,7 +217,7 @@ main( int argc, char *argv[ ] )
 	}
 
 	fprintf( stderr, "%8d\t%4d\t%10d\t%10.3lf\n",
-		NMB, LOCAL_SIZE, NUM_WORK_GROUPS, (double)NUM_ELEMENTS/(time1-time0)/1000000000. );
+		NKB, LOCAL_SIZE, NUM_WORK_GROUPS, (double)NUM_ELEMENTS/(time1-time0)/1000000000. );
 
 #ifdef WIN32
 	Sleep( 2000 );
