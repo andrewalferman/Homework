@@ -24,10 +24,10 @@ for i in $localsizes; do
 done
 
 # Array Multiply+Reduce
-for i in $localsizes; do
-  for j in $numbers; do
-    g++ -DLOCAL_SIZE=$i -DNMB=$j -o first first.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
-    ./arraymult.out
-    rm arraymult.out
-  done
-done
+#for i in $localsizes; do
+#  for j in $numbers; do
+#    g++ -DLOCAL_SIZE=$i -DNMB=$j -o first first.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
+#    ./arraymult.out
+#    rm arraymult.out
+#  done
+#done
