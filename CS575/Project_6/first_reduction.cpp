@@ -228,7 +228,7 @@ main( int argc, char *argv[ ] )
 	// 	}
 	// }
 
-	fprintf( stderr, "Multiply+Reduction,\t%8d,\t%4d,\t%10d,\t%10.3lf\n",
+	printf( "Multiply+Reduction,\t%8d,\t%4d,\t%10d,\t%10.3lf\n",
 		NKB, LOCAL_SIZE, NUM_WORK_GROUPS, (double)NUM_ELEMENTS/(time1-time0)/1000000000. );
 
 #ifdef WIN32
