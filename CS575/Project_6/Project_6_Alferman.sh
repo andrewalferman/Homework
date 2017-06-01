@@ -2,7 +2,8 @@
 
 echo NKB, LOCAL_SIZE, NUM_WORK_GROUPS, GigaCalcPerSecond
 
-localsizes="8 16 32 64 96 128 192 256 384 512"
+# Note that it will alwasy fail at 96, 192, and 384
+localsizes="8 16 32 64 128 256 512"
 numbers="1 2 4 8 16 32 64 128 256 512 1024 2048 3072 4096 6144 8192"
 
 # Array Multiply

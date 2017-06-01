@@ -74,7 +74,7 @@ main( int argc, char *argv[ ] )
 
 	float *hA = new float[ NUM_ELEMENTS ];
 	float *hB = new float[ NUM_ELEMENTS ];
-	float *hC = new float[ numWorkGroups ];
+	float *hC = new float[ NUM_WORK_GROUPS ];
 
 	// fill the host memory buffers:
 
@@ -84,7 +84,7 @@ main( int argc, char *argv[ ] )
 	}
 
 	size_t abSize = NUM_ELEMENTS * sizeof(float);
-	size_t cSize = numWorkGroups * sizeof(float);
+	size_t cSize = NUM_WORK_GROUPS * sizeof(float);
 
 	// 3. create an opencl context:
 
@@ -203,14 +203,14 @@ main( int argc, char *argv[ ] )
 
 	// 12. read the results buffer back from the device to the host:
 
-	status = clEnqueueReadBuffer( cmdQueue, dC, CL_TRUE, 0,  numWorkGroups*sizeof(float), hC, 0, NULL, NULL );
+	status = clEnqueueReadBuffer( cmdQueue, dC, CL_TRUE, 0,  NUM_WORK_GROUPS*sizeof(float), hC, 0, NULL, NULL );
 	if( status != CL_SUCCESS )
 	{
 			fprintf( stderr, "clEnqueueReadBuffer failed\n" );
 	}
 
 	float sum = 0;
-	for( int i = 0; i < numWorkgroups; i++)
+	for( int i = 0; i < NUM_WORK_GROUPS; i++)
 	{
 		sum += hC[ i ];
 	}
