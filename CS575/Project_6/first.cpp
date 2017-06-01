@@ -146,7 +146,7 @@ main( int argc, char *argv[ ] )
 
 	// 8. compile and link the kernel code:
 
-	char *options = { "" };
+	const char *options = { "" };
 	status = clBuildProgram( program, 1, &device, options, NULL, NULL );
 	if( status != CL_SUCCESS )
 	{
@@ -216,7 +216,7 @@ main( int argc, char *argv[ ] )
 		}
 	}
 
-	fprintf( stderr, "%8d\t%4d\t%10d\t%10.3lf GigaMultsPerSecond\n",
+	fprintf( stderr, "%8d\t%4d\t%10d\t%10.3lf\n",
 		NMB, LOCAL_SIZE, NUM_WORK_GROUPS, (double)NUM_ELEMENTS/(time1-time0)/1000000000. );
 
 #ifdef WIN32

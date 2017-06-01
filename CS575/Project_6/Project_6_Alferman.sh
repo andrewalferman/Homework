@@ -1,33 +1,33 @@
 #!/bin/bash
 
-rm simd.p5.out
+echo NMB, LOCAL_SIZE, NUM_WORK_GROUPS, GigaCalcPerSecond
 
-g++ -c simd.p5.cpp -o simd.p5.out
+localsizes="8 16 32 64 96 128 192 256 384 512"
+numbers="1 2 4 8 16 32 64 128 256 512 1024 2048 3072 4096 6144 8192"
 
-echo Run, ARRAYSIZE, MegaMults
-
-listsizes="1000 2000 4000 8000 10000 20000 400000 80000 160000 250000 500000 750000 1000000 2000000 4000000 6000000 8000000 10000000 16000000 24000000 32000000"
-
-for i in $listsizes; do
-  g++ -DARRAYSIZE=$i arraymult.cpp -o arraymult.out -lm -fopenmp
-  ./arraymult.out
-  rm arraymult.out
+# Array Multiply
+for i in $localsizes; do
+  for j in $numbers; do
+    g++ -DLOCAL_SIZE=$i -DNMB=$j -o first first.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
+    ./arraymult.out
+    rm arraymult.out
+  done
 done
 
-for i in $listsizes; do
-  g++ -DARRAYSIZE=$i arraymult_sum.cpp -o arraymult_sum.out -lm -fopenmp
-  ./arraymult_sum.out
-  rm arraymult_sum.out
+# Array Multiply-Add
+for i in $localsizes; do
+  for j in $numbers; do
+    g++ -DLOCAL_SIZE=$i -DNMB=$j -o first first.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
+    ./arraymult.out
+    rm arraymult.out
+  done
 done
 
-for i in $listsizes; do
-  g++ -DARRAYSIZE=$i arraymult_SIMD.cpp simd.p5.out -o arraymult_SIMD.out -lm -fopenmp
-  ./arraymult_SIMD.out
-  rm arraymult_SIMD.out
-done
-
-for i in $listsizes; do
-  g++ -DARRAYSIZE=$i arraymult_sum_SIMD.cpp simd.p5.out -o arraymult_sum_SIMD.out -lm -fopenmp
-  ./arraymult_sum_SIMD.out
-  rm arraymult_sum_SIMD.out
+# Array Multiply+Reduce
+for i in $localsizes; do
+  for j in $numbers; do
+    g++ -DLOCAL_SIZE=$i -DNMB=$j -o first first.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
+    ./arraymult.out
+    rm arraymult.out
+  done
 done
