@@ -74,7 +74,7 @@ main( int argc, char *argv[ ] )
 
 	float *hA = new float[ NUM_ELEMENTS ];
 	float *hB = new float[ NUM_ELEMENTS ];
-	float *hC = new float[ NUM_ELEMENTS ];
+	float *hC = new float[ numWorkGroups ];
 
 	// fill the host memory buffers:
 
@@ -83,7 +83,8 @@ main( int argc, char *argv[ ] )
 		hA[i] = hB[i] = (float) sqrt(  (double)i  );
 	}
 
-	size_t dataSize = NUM_ELEMENTS * sizeof(float);
+	size_t abSize = NUM_ELEMENTS * sizeof(float);
+	size_t cSize = numWorkGroups * sizeof(float);
 
 	// 3. create an opencl context:
 
@@ -99,25 +100,25 @@ main( int argc, char *argv[ ] )
 
 	// 5. allocate the device memory buffers:
 
-	cl_mem dA = clCreateBuffer( context, CL_MEM_READ_ONLY,  dataSize, NULL, &status );
+	cl_mem dA = clCreateBuffer( context, CL_MEM_READ_ONLY,  abSize, NULL, &status );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clCreateBuffer failed (1)\n" );
 
-	cl_mem dB = clCreateBuffer( context, CL_MEM_READ_ONLY,  dataSize, NULL, &status );
+	cl_mem dB = clCreateBuffer( context, CL_MEM_READ_ONLY,  abSize, NULL, &status );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clCreateBuffer failed (2)\n" );
 
-	cl_mem dC = clCreateBuffer( context, CL_MEM_WRITE_ONLY, dataSize, NULL, &status );
+	cl_mem dC = clCreateBuffer( context, CL_MEM_WRITE_ONLY, cSize, NULL, &status );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clCreateBuffer failed (3)\n" );
 
 	// 6. enqueue the 2 commands to write the data from the host buffers to the device buffers:
 
-	status = clEnqueueWriteBuffer( cmdQueue, dA, CL_FALSE, 0, dataSize, hA, 0, NULL, NULL );
+	status = clEnqueueWriteBuffer( cmdQueue, dA, CL_FALSE, 0, abSize, hA, 0, NULL, NULL );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clEnqueueWriteBuffer failed (1)\n" );
 
-	status = clEnqueueWriteBuffer( cmdQueue, dB, CL_FALSE, 0, dataSize, hB, 0, NULL, NULL );
+	status = clEnqueueWriteBuffer( cmdQueue, dB, CL_FALSE, 0, abSize, hB, 0, NULL, NULL );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clEnqueueWriteBuffer failed (2)\n" );
 
@@ -160,7 +161,7 @@ main( int argc, char *argv[ ] )
 
 	// 9. create the kernel object:
 
-	cl_kernel kernel = clCreateKernel( program, "ArrayMult", &status );
+	cl_kernel kernel = clCreateKernel( program, "ArrayMultReduce", &status );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clCreateKernel failed\n" );
 
@@ -174,9 +175,13 @@ main( int argc, char *argv[ ] )
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clSetKernelArg failed (2)\n" );
 
-	status = clSetKernelArg( kernel, 2, sizeof(cl_mem), &dC );
+	status = clSetKernelArg( kernel, 2, sizeof(float), NULL );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clSetKernelArg failed (3)\n" );
+
+	status = clSetKernelArg( kernel, 3, sizeof(cl_mem), &dC );
+	if( status != CL_SUCCESS )
+		fprintf( stderr, "clSetKernelArg failed (4)\n" );
 
 
 	// 11. enqueue the kernel object for execution:
@@ -198,23 +203,30 @@ main( int argc, char *argv[ ] )
 
 	// 12. read the results buffer back from the device to the host:
 
-	status = clEnqueueReadBuffer( cmdQueue, dC, CL_TRUE, 0, dataSize, hC, 0, NULL, NULL );
+	status = clEnqueueReadBuffer( cmdQueue, dC, CL_TRUE, 0,  numWorkGroups*sizeof(float), hC, 0, NULL, NULL );
 	if( status != CL_SUCCESS )
+	{
 			fprintf( stderr, "clEnqueueReadBuffer failed\n" );
+	}
 
+	float sum = 0;
+	for( int i = 0; i < numWorkgroups; i++)
+	{
+		sum += hC[ i ];
+	}
 	// did it work?
 
-	for( int i = 0; i < NUM_ELEMENTS; i++ )
-	{
-		float expected = hA[i] * hB[i];
-		if( fabs( hC[i] - expected ) > TOL )
-		{
-			//fprintf( stderr, "%4d: %13.6f * %13.6f wrongly produced %13.6f instead of %13.6f (%13.8f)\n",
-				//i, hA[i], hB[i], hC[i], expected, fabs(hC[i]-expected) );
-			//fprintf( stderr, "%4d:    0x%08x *    0x%08x wrongly produced    0x%08x instead of    0x%08x\n",
-				//i, LookAtTheBits(hA[i]), LookAtTheBits(hB[i]), LookAtTheBits(hC[i]), LookAtTheBits(expected) );
-		}
-	}
+	// for( int i = 0; i < NUM_ELEMENTS; i++ )
+	// {
+	// 	float expected = hA[i] * hB[i];
+	// 	if( fabs( hC[i] - expected ) > TOL )
+	// 	{
+	// 		//fprintf( stderr, "%4d: %13.6f * %13.6f wrongly produced %13.6f instead of %13.6f (%13.8f)\n",
+	// 			//i, hA[i], hB[i], hC[i], expected, fabs(hC[i]-expected) );
+	// 		//fprintf( stderr, "%4d:    0x%08x *    0x%08x wrongly produced    0x%08x instead of    0x%08x\n",
+	// 			//i, LookAtTheBits(hA[i]), LookAtTheBits(hB[i]), LookAtTheBits(hC[i]), LookAtTheBits(expected) );
+	// 	}
+	// }
 
 	fprintf( stderr, "%8d\t%4d\t%10d\t%10.3lf\n",
 		NKB, LOCAL_SIZE, NUM_WORK_GROUPS, (double)NUM_ELEMENTS/(time1-time0)/1000000000. );
