@@ -19,7 +19,7 @@
 #define	NKB			64
 #endif
 
-#define NUM_ELEMENTS		NKB*1024*1024
+#define NUM_ELEMENTS		NKB*1024
 
 #ifndef LOCAL_SIZE
 #define	LOCAL_SIZE		64
