@@ -23,11 +23,11 @@ for i in $localsizes; do
   done
 done
 
-# Array Multiply+Reduce
-#for i in $localsizes; do
-#  for j in $numbers; do
-#    g++ -DLOCAL_SIZE=$i -DNKB=$j -o first_reduction first_reduction.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
-#    ./first_reduction
-#    rm first_reduction
-#  done
-#done
+Array Multiply+Reduce
+for i in $localsizes; do
+ for j in $numbers; do
+   g++ -DLOCAL_SIZE=$i -DNKB=$j -o first_reduction first_reduction.cpp /scratch/cuda-7.0/lib64/libOpenCL.so -lm -fopenmp
+   ./first_reduction
+   rm first_reduction
+ done
+done
