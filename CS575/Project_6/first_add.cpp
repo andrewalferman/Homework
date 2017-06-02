@@ -189,7 +189,7 @@ main( int argc, char *argv[ ] )
 
 	status = clSetKernelArg( kernel, 2, sizeof(cl_mem), &dD );
 	if( status != CL_SUCCESS )
-		fprintf( stderr, "clSetKernelArg failed (3)\n" )
+		fprintf( stderr, "clSetKernelArg failed (3)\n" );
 
 	// 11. enqueue the kernel object for execution:
 
