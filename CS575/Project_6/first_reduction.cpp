@@ -186,8 +186,8 @@ main( int argc, char *argv[ ] )
 
 	// 11. enqueue the kernel object for execution:
 
-	size_t globalWorkSize[4] = { NUM_ELEMENTS, 1, 1, 1 };
-	size_t localWorkSize[4]  = { LOCAL_SIZE,   1, 1, 1 };
+	size_t globalWorkSize[3] = { NUM_ELEMENTS, 1, 1 };
+	size_t localWorkSize[3]  = { LOCAL_SIZE,   1, 1 };
 
 	Wait( cmdQueue );
 	double time0 = omp_get_wtime( );
