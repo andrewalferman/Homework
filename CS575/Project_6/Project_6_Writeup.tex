@@ -1,0 +1,550 @@
+\documentclass{article}
+
+% packages and stuff
+\usepackage[utf8]{inputenc}
+\usepackage[headheight = 18pt, footskip = 10pt]{geometry}
+    \geometry{a4paper}
+    \geometry{left=0.5in, right=0.5in, top=.95in, bottom=.95in}
+\usepackage{graphicx}
+\usepackage{amsmath}
+%Better boxed command in math mode
+\usepackage{empheq}
+%Input text files and code
+\usepackage{verbatim}
+%Bold math
+\usepackage{bm}
+%Cancel to in math mode
+\usepackage{cancel}
+% Input standalone tex documents
+\usepackage{standalone}
+\usepackage{subcaption}
+\usepackage{ulem}
+\usepackage{bigstrut}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{calc}
+\usepackage{xkeyval}
+\usepackage{color, soul}
+\usepackage{ifthen}
+\usepackage{import}
+\usepackage{times}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{wrapfig}
+\usepackage[font={small,it}]{caption}
+\usepackage[version=4]{mhchem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{epigraph}
+
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Include external pdf documents
+\usepackage{pdfpages}
+
+%Nice captions in floating figures
+\usepackage{caption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyvrb}
+\usepackage{comment}
+\usepackage{enumerate}
+\usepackage{subfiles}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% capital H is a champion
+\usepackage{float}
+    \restylefloat{table}
+
+% make section styles non-lame
+\usepackage{sectsty}
+    \allsectionsfont{\mdseries\upshape}
+
+% easy coloring for todo notes
+\newcommand{\done}{\todo[inline, color=green]{(DONE)}{}}
+\newcommand{\notdone}{\todo[inline, color=red]{(NOT DONE)}{}}
+\newcommand{\fix}[1]{\todo[inline, color=red!75]{(FIX) #1}{}}
+\newcommand{\discuss}[1]{\todo[inline, color=blue!40]{(DISCUSS) #1}{}}
+\newcommand{\note}[1]{\todo[inline, color=yellow!20]{(NOTE) #1}}
+\newcommand{\review}{\todo[inline, color=red!45!yellow!45]{(REVIEW)}{}}
+
+
+\pagenumbering{gobble}
+\setlength\parindent{10pt}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{0pt}
+\setlength{\belowdisplayskip}{0pt}
+\relpenalty=10000 % don't split equations!!
+\binoppenalty=10000 % don't split equations!!
+
+\newcommand{\FigSiz}{0.37\textwidth}
+
+% Set global figure size variable
+
+\makeatletter
+\define@key{Gin}{figsize}[true]{%
+    \edef\@tempa{{Gin}{width=\FigSiz}}%
+    \expandafter\setkeys\@tempa
+}
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Custom title
+\pagenumbering{arabic}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+    \fancyhead{}
+    \fancyfoot{}
+    \pagestyle{fancy}
+    \chead{\Large CS575: Project 6}
+    \lhead{\Large Andrew Alferman}
+    \rhead{\Large \today}
+    \cfoot{\thepage  ~\ of ~\pageref{LastPage}}
+
+\usepackage{titlesec}
+\titlespacing*{\subsection}
+{0pt}{0.65\baselineskip}{0.65\baselineskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+
+% Brief summary of the assignment
+The purpose of this assignment was to test and demonstrate performance trends of GPUs when multiplying, multiplying and adding, and multiplying and reducing large arrays of numbers by using OpenCL.
+
+\subsection*{Question 1}
+\textit{What machine did you run the experiment on?}
+
+The experiment was run on Rabbit at a time when the load average was approximately 0.75.
+
+\subsection*{Question 2}
+\textit{Show tables and graphs of the array multiplication and array multiplication with addition timing experiments.}
+
+Graphs of the computation speed versus the global size and local work group size can be found in Figures \ref{fig:MultGlobal} and \ref{fig:MultLocal}.  A table of the values used to generate these graphs can be found in Table \ref{tab:Data} of Appendix \ref{app:Data}.
+
+\begin{figure}[h]
+	\centering
+        \includegraphics[width=0.7\linewidth]{Mult_Arraysize.pdf}
+        \caption{Speed of the multiplication and multiplication with addition experiments vs. global size.  Note that the solid lines signify multiplication, while the dashed lines signify multiplication with addition.}
+        \label{fig:MultGlobal}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+        \includegraphics[width=0.7\linewidth]{Mult_Localsize.pdf}
+        \caption{Speed of the multiplication and multiplication with addition experiments vs. local size.  Note that the solid lines signify multiplication, while the dashed lines signify multiplication with addition.}
+        \label{fig:MultLocal}
+\end{figure}
+
+\subsection*{Question 3}
+\textit{What patterns are you seeing in the performance curves of array multiplication and array multiplication-addition?}
+
+
+
+\subsection*{Question 4}
+\textit{Why do you think the patterns of array multiplication and array multiplication-addition look this way?}
+
+
+
+\subsection*{Question 5}
+\textit{What is the performance difference between doing a multiply and doing a multiply-add?}
+
+
+
+\subsection*{Question 6}
+\textit{What does the difference in performance between doing a multiply and a multiply-add mean for the proper use of GPU parallel computing?}
+
+
+
+\newpage
+\subsection*{Question 7}
+\textit{Show a table and graph for the performance of the multiplication-reduction experiment.}
+
+\begin{figure}[h]
+	\centering
+        \includegraphics[width=0.7\linewidth]{Mult_Reduc_Arraysize.pdf}
+        \caption{Speed of the multiplication with reduction experiment vs. global size.}
+        \label{fig:ReducGlobal}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+        \includegraphics[width=0.7\linewidth]{Mult_Reduc_Localsize.pdf}
+        \caption{Speed of the multiplication with reduction experiment vs. local size.}
+        \label{fig:ReducLocal}
+\end{figure}
+
+\subsection*{Question 8}
+\textit{What patterns are you seeing in the performance curves of the multiplication-reduction experiment?}
+
+
+
+\subsection*{Question 9}
+\textit{Why do you think the patterns of the multiplication-reduction experiment look this way?}
+
+
+
+\subsection*{Question 10}
+\textit{What do the patterns in the multiplication-reduction experiment mean for the proper use of GPU parallel computing?}
+
+
+
+\newpage
+\section{Appendices}
+\subsection{Tables of Generated Data}
+\label{app:Data}
+
+
+\begin{longtable}{|l|l|l|l|l|}
+\caption{Raw Data Generated}\label{tab:Data}\\
+\hline
+Mode               & NKB  & LOCAL\_SIZE & NUM\_WORK\_GROUPS & GigaCalcPerSecond \\ \hline
+Multiply           & 1    & 8           & 128               & 0.012             \\ \hline
+Multiply           & 2    & 8           & 256               & 0.039             \\ \hline
+Multiply           & 4    & 8           & 512               & 0.055             \\ \hline
+Multiply           & 8    & 8           & 1024              & 0.162             \\ \hline
+Multiply           & 16   & 8           & 2048              & 0.221             \\ \hline
+Multiply           & 32   & 8           & 4096              & 0.371             \\ \hline
+Multiply           & 64   & 8           & 8192              & 0.663             \\ \hline
+Multiply           & 128  & 8           & 16384             & 0.575             \\ \hline
+Multiply           & 256  & 8           & 32768             & 1.028             \\ \hline
+Multiply           & 512  & 8           & 65536             & 1.439             \\ \hline
+Multiply           & 1024 & 8           & 131072            & 1.983             \\ \hline
+Multiply           & 2048 & 8           & 262144            & 2.254             \\ \hline
+Multiply           & 3072 & 8           & 393216            & 2.495             \\ \hline
+Multiply           & 4096 & 8           & 524288            & 2.532             \\ \hline
+Multiply           & 6144 & 8           & 786432            & 2.637             \\ \hline
+Multiply           & 8192 & 8           & 1048576           & 2.669             \\ \hline
+Multiply           & 1    & 16          & 64                & 0.020             \\ \hline
+Multiply           & 2    & 16          & 128               & 0.040             \\ \hline
+Multiply           & 4    & 16          & 256               & 0.081             \\ \hline
+Multiply           & 8    & 16          & 512               & 0.151             \\ \hline
+Multiply           & 16   & 16          & 1024              & 0.334             \\ \hline
+Multiply           & 32   & 16          & 2048              & 0.620             \\ \hline
+Multiply           & 64   & 16          & 4096              & 1.167             \\ \hline
+Multiply           & 128  & 16          & 8192              & 0.570             \\ \hline
+Multiply           & 256  & 16          & 16384             & 0.923             \\ \hline
+Multiply           & 512  & 16          & 32768             & 1.719             \\ \hline
+Multiply           & 1024 & 16          & 65536             & 2.543             \\ \hline
+Multiply           & 2048 & 16          & 131072            & 3.761             \\ \hline
+Multiply           & 3072 & 16          & 196608            & 4.080             \\ \hline
+Multiply           & 4096 & 16          & 262144            & 4.181             \\ \hline
+Multiply           & 6144 & 16          & 393216            & 4.251             \\ \hline
+Multiply           & 8192 & 16          & 524288            & 4.885             \\ \hline
+Multiply           & 1    & 32          & 32                & 0.019             \\ \hline
+Multiply           & 2    & 32          & 64                & 0.028             \\ \hline
+Multiply           & 4    & 32          & 128               & 0.075             \\ \hline
+Multiply           & 8    & 32          & 256               & 0.094             \\ \hline
+Multiply           & 16   & 32          & 512               & 0.199             \\ \hline
+Multiply           & 32   & 32          & 1024              & 0.522             \\ \hline
+Multiply           & 64   & 32          & 2048              & 1.286             \\ \hline
+Multiply           & 128  & 32          & 4096              & 0.619             \\ \hline
+Multiply           & 256  & 32          & 8192              & 0.886             \\ \hline
+Multiply           & 512  & 32          & 16384             & 2.207             \\ \hline
+Multiply           & 1024 & 32          & 32768             & 3.703             \\ \hline
+Multiply           & 2048 & 32          & 65536             & 5.230             \\ \hline
+Multiply           & 3072 & 32          & 98304             & 5.754             \\ \hline
+Multiply           & 4096 & 32          & 131072            & 6.370             \\ \hline
+Multiply           & 6144 & 32          & 196608            & 6.835             \\ \hline
+Multiply           & 8192 & 32          & 262144            & 7.453             \\ \hline
+Multiply           & 1    & 64          & 16                & 0.015             \\ \hline
+Multiply           & 2    & 64          & 32                & 0.038             \\ \hline
+Multiply           & 4    & 64          & 64                & 0.074             \\ \hline
+Multiply           & 8    & 64          & 128               & 0.143             \\ \hline
+Multiply           & 16   & 64          & 256               & 0.217             \\ \hline
+Multiply           & 32   & 64          & 512               & 0.554             \\ \hline
+Multiply           & 64   & 64          & 1024              & 1.067             \\ \hline
+Multiply           & 128  & 64          & 2048              & 0.628             \\ \hline
+Multiply           & 256  & 64          & 4096              & 1.296             \\ \hline
+Multiply           & 512  & 64          & 8192              & 1.853             \\ \hline
+Multiply           & 1024 & 64          & 16384             & 4.060             \\ \hline
+Multiply           & 2048 & 64          & 32768             & 4.957             \\ \hline
+Multiply           & 3072 & 64          & 49152             & 7.220             \\ \hline
+Multiply           & 4096 & 64          & 65536             & 8.061             \\ \hline
+Multiply           & 6144 & 64          & 98304             & 8.002             \\ \hline
+Multiply           & 8192 & 64          & 131072            & 11.136            \\ \hline
+Multiply           & 1    & 128         & 8                 & 0.017             \\ \hline
+Multiply           & 2    & 128         & 16                & 0.030             \\ \hline
+Multiply           & 4    & 128         & 32                & 0.066             \\ \hline
+Multiply           & 8    & 128         & 64                & 0.093             \\ \hline
+Multiply           & 16   & 128         & 128               & 0.314             \\ \hline
+Multiply           & 32   & 128         & 256               & 0.561             \\ \hline
+Multiply           & 64   & 128         & 512               & 0.754             \\ \hline
+Multiply           & 128  & 128         & 1024              & 0.590             \\ \hline
+Multiply           & 256  & 128         & 2048              & 1.289             \\ \hline
+Multiply           & 512  & 128         & 4096              & 2.381             \\ \hline
+Multiply           & 1024 & 128         & 8192              & 4.375             \\ \hline
+Multiply           & 2048 & 128         & 16384             & 5.040             \\ \hline
+Multiply           & 3072 & 128         & 24576             & 7.037             \\ \hline
+Multiply           & 4096 & 128         & 32768             & 8.384             \\ \hline
+Multiply           & 6144 & 128         & 49152             & 9.817             \\ \hline
+Multiply           & 8192 & 128         & 65536             & 12.035            \\ \hline
+Multiply           & 1    & 256         & 4                 & 0.020             \\ \hline
+Multiply           & 2    & 256         & 8                 & 0.040             \\ \hline
+Multiply           & 4    & 256         & 16                & 0.066             \\ \hline
+Multiply           & 8    & 256         & 32                & 0.165             \\ \hline
+Multiply           & 16   & 256         & 64                & 0.299             \\ \hline
+Multiply           & 32   & 256         & 128               & 0.651             \\ \hline
+Multiply           & 64   & 256         & 256               & 1.274             \\ \hline
+Multiply           & 128  & 256         & 512               & 0.634             \\ \hline
+Multiply           & 256  & 256         & 1024              & 0.999             \\ \hline
+Multiply           & 512  & 256         & 2048              & 2.371             \\ \hline
+Multiply           & 1024 & 256         & 4096              & 4.339             \\ \hline
+Multiply           & 2048 & 256         & 8192              & 6.198             \\ \hline
+Multiply           & 3072 & 256         & 12288             & 7.634             \\ \hline
+Multiply           & 4096 & 256         & 16384             & 8.630             \\ \hline
+Multiply           & 6144 & 256         & 24576             & 8.124             \\ \hline
+Multiply           & 8192 & 256         & 32768             & 10.489            \\ \hline
+Multiply           & 1    & 512         & 2                 & 0.021             \\ \hline
+Multiply           & 2    & 512         & 4                 & 0.040             \\ \hline
+Multiply           & 4    & 512         & 8                 & 0.055             \\ \hline
+Multiply           & 8    & 512         & 16                & 0.149             \\ \hline
+Multiply           & 16   & 512         & 32                & 0.321             \\ \hline
+Multiply           & 32   & 512         & 64                & 0.652             \\ \hline
+Multiply           & 64   & 512         & 128               & 1.282             \\ \hline
+Multiply           & 128  & 512         & 256               & 0.521             \\ \hline
+Multiply           & 256  & 512         & 512               & 1.109             \\ \hline
+Multiply           & 512  & 512         & 1024              & 2.098             \\ \hline
+Multiply           & 1024 & 512         & 2048              & 3.946             \\ \hline
+Multiply           & 2048 & 512         & 4096              & 5.755             \\ \hline
+Multiply           & 3072 & 512         & 6144              & 7.230             \\ \hline
+Multiply           & 4096 & 512         & 8192              & 8.731             \\ \hline
+Multiply           & 6144 & 512         & 12288             & 8.024             \\ \hline
+Multiply           & 8192 & 512         & 16384             & 11.997            \\ \hline
+Multiply-Add       & 1    & 8           & 128               & 0.017             \\ \hline
+Multiply-Add       & 2    & 8           & 256               & 0.039             \\ \hline
+Multiply-Add       & 4    & 8           & 512               & 0.082             \\ \hline
+Multiply-Add       & 8    & 8           & 1024              & 0.125             \\ \hline
+Multiply-Add       & 16   & 8           & 2048              & 0.272             \\ \hline
+Multiply-Add       & 32   & 8           & 4096              & 0.561             \\ \hline
+Multiply-Add       & 64   & 8           & 8192              & 0.882             \\ \hline
+Multiply-Add       & 128  & 8           & 16384             & 0.514             \\ \hline
+Multiply-Add       & 256  & 8           & 32768             & 0.892             \\ \hline
+Multiply-Add       & 512  & 8           & 65536             & 1.446             \\ \hline
+Multiply-Add       & 1024 & 8           & 131072            & 1.836             \\ \hline
+Multiply-Add       & 2048 & 8           & 262144            & 2.175             \\ \hline
+Multiply-Add       & 3072 & 8           & 393216            & 2.303             \\ \hline
+Multiply-Add       & 4096 & 8           & 524288            & 2.468             \\ \hline
+Multiply-Add       & 6144 & 8           & 786432            & 2.470             \\ \hline
+Multiply-Add       & 8192 & 8           & 1048576           & 2.677             \\ \hline
+Multiply-Add       & 1    & 16          & 64                & 0.016             \\ \hline
+Multiply-Add       & 2    & 16          & 128               & 0.033             \\ \hline
+Multiply-Add       & 4    & 16          & 256               & 0.061             \\ \hline
+Multiply-Add       & 8    & 16          & 512               & 0.156             \\ \hline
+Multiply-Add       & 16   & 16          & 1024              & 0.330             \\ \hline
+Multiply-Add       & 32   & 16          & 2048              & 0.627             \\ \hline
+Multiply-Add       & 64   & 16          & 4096              & 1.111             \\ \hline
+Multiply-Add       & 128  & 16          & 8192              & 0.624             \\ \hline
+Multiply-Add       & 256  & 16          & 16384             & 1.034             \\ \hline
+Multiply-Add       & 512  & 16          & 32768             & 1.466             \\ \hline
+Multiply-Add       & 1024 & 16          & 65536             & 2.525             \\ \hline
+Multiply-Add       & 2048 & 16          & 131072            & 3.253             \\ \hline
+Multiply-Add       & 3072 & 16          & 196608            & 3.624             \\ \hline
+Multiply-Add       & 4096 & 16          & 262144            & 3.975             \\ \hline
+Multiply-Add       & 6144 & 16          & 393216            & 4.058             \\ \hline
+Multiply-Add       & 8192 & 16          & 524288            & 4.707             \\ \hline
+Multiply-Add       & 1    & 32          & 32                & 0.021             \\ \hline
+Multiply-Add       & 2    & 32          & 64                & 0.024             \\ \hline
+Multiply-Add       & 4    & 32          & 128               & 0.080             \\ \hline
+Multiply-Add       & 8    & 32          & 256               & 0.150             \\ \hline
+Multiply-Add       & 16   & 32          & 512               & 0.223             \\ \hline
+Multiply-Add       & 32   & 32          & 1024              & 0.567             \\ \hline
+Multiply-Add       & 64   & 32          & 2048              & 1.123             \\ \hline
+Multiply-Add       & 128  & 32          & 4096              & 0.579             \\ \hline
+Multiply-Add       & 256  & 32          & 8192              & 1.175             \\ \hline
+Multiply-Add       & 512  & 32          & 16384             & 2.119             \\ \hline
+Multiply-Add       & 1024 & 32          & 32768             & 3.346             \\ \hline
+Multiply-Add       & 2048 & 32          & 65536             & 4.753             \\ \hline
+Multiply-Add       & 3072 & 32          & 98304             & 4.935             \\ \hline
+Multiply-Add       & 4096 & 32          & 131072            & 5.765             \\ \hline
+Multiply-Add       & 6144 & 32          & 196608            & 5.567             \\ \hline
+Multiply-Add       & 8192 & 32          & 262144            & 7.500             \\ \hline
+Multiply-Add       & 1    & 64          & 16                & 0.020             \\ \hline
+Multiply-Add       & 2    & 64          & 32                & 0.024             \\ \hline
+Multiply-Add       & 4    & 64          & 64                & 0.075             \\ \hline
+Multiply-Add       & 8    & 64          & 128               & 0.098             \\ \hline
+Multiply-Add       & 16   & 64          & 256               & 0.222             \\ \hline
+Multiply-Add       & 32   & 64          & 512               & 0.520             \\ \hline
+Multiply-Add       & 64   & 64          & 1024              & 0.740             \\ \hline
+Multiply-Add       & 128  & 64          & 2048              & 0.458             \\ \hline
+Multiply-Add       & 256  & 64          & 4096              & 1.127             \\ \hline
+Multiply-Add       & 512  & 64          & 8192              & 2.159             \\ \hline
+Multiply-Add       & 1024 & 64          & 16384             & 3.397             \\ \hline
+Multiply-Add       & 2048 & 64          & 32768             & 5.574             \\ \hline
+Multiply-Add       & 3072 & 64          & 49152             & 5.398             \\ \hline
+Multiply-Add       & 4096 & 64          & 65536             & 6.841             \\ \hline
+Multiply-Add       & 6144 & 64          & 98304             & 7.723             \\ \hline
+Multiply-Add       & 8192 & 64          & 131072            & 8.594             \\ \hline
+Multiply-Add       & 1    & 128         & 8                 & 0.020             \\ \hline
+Multiply-Add       & 2    & 128         & 16                & 0.027             \\ \hline
+Multiply-Add       & 4    & 128         & 32                & 0.074             \\ \hline
+Multiply-Add       & 8    & 128         & 64                & 0.142             \\ \hline
+Multiply-Add       & 16   & 128         & 128               & 0.321             \\ \hline
+Multiply-Add       & 32   & 128         & 256               & 0.652             \\ \hline
+Multiply-Add       & 64   & 128         & 512               & 0.886             \\ \hline
+Multiply-Add       & 128  & 128         & 1024              & 0.577             \\ \hline
+Multiply-Add       & 256  & 128         & 2048              & 1.185             \\ \hline
+Multiply-Add       & 512  & 128         & 4096              & 2.046             \\ \hline
+Multiply-Add       & 1024 & 128         & 8192              & 2.924             \\ \hline
+Multiply-Add       & 2048 & 128         & 16384             & 5.684             \\ \hline
+Multiply-Add       & 3072 & 128         & 24576             & 6.119             \\ \hline
+Multiply-Add       & 4096 & 128         & 32768             & 6.571             \\ \hline
+Multiply-Add       & 6144 & 128         & 49152             & 7.338             \\ \hline
+Multiply-Add       & 8192 & 128         & 65536             & 9.242             \\ \hline
+Multiply-Add       & 1    & 256         & 4                 & 0.020             \\ \hline
+Multiply-Add       & 2    & 256         & 8                 & 0.040             \\ \hline
+Multiply-Add       & 4    & 256         & 16                & 0.079             \\ \hline
+Multiply-Add       & 8    & 256         & 32                & 0.134             \\ \hline
+Multiply-Add       & 16   & 256         & 64                & 0.282             \\ \hline
+Multiply-Add       & 32   & 256         & 128               & 0.566             \\ \hline
+Multiply-Add       & 64   & 256         & 256               & 0.856             \\ \hline
+Multiply-Add       & 128  & 256         & 512               & 0.550             \\ \hline
+Multiply-Add       & 256  & 256         & 1024              & 1.042             \\ \hline
+Multiply-Add       & 512  & 256         & 2048              & 2.080             \\ \hline
+Multiply-Add       & 1024 & 256         & 4096              & 3.494             \\ \hline
+Multiply-Add       & 2048 & 256         & 8192              & 5.963             \\ \hline
+Multiply-Add       & 3072 & 256         & 12288             & 6.604             \\ \hline
+Multiply-Add       & 4096 & 256         & 16384             & 6.912             \\ \hline
+Multiply-Add       & 6144 & 256         & 24576             & 7.172             \\ \hline
+Multiply-Add       & 8192 & 256         & 32768             & 9.757             \\ \hline
+Multiply-Add       & 1    & 512         & 2                 & 0.019             \\ \hline
+Multiply-Add       & 2    & 512         & 4                 & 0.029             \\ \hline
+Multiply-Add       & 4    & 512         & 8                 & 0.082             \\ \hline
+Multiply-Add       & 8    & 512         & 16                & 0.104             \\ \hline
+Multiply-Add       & 16   & 512         & 32                & 0.235             \\ \hline
+Multiply-Add       & 32   & 512         & 64                & 0.621             \\ \hline
+Multiply-Add       & 64   & 512         & 128               & 1.256             \\ \hline
+Multiply-Add       & 128  & 512         & 256               & 0.477             \\ \hline
+Multiply-Add       & 256  & 512         & 512               & 0.955             \\ \hline
+Multiply-Add       & 512  & 512         & 1024              & 2.062             \\ \hline
+Multiply-Add       & 1024 & 512         & 2048              & 4.019             \\ \hline
+Multiply-Add       & 2048 & 512         & 4096              & 5.978             \\ \hline
+Multiply-Add       & 3072 & 512         & 6144              & 5.717             \\ \hline
+Multiply-Add       & 4096 & 512         & 8192              & 7.729             \\ \hline
+Multiply-Add       & 6144 & 512         & 12288             & 7.954             \\ \hline
+Multiply-Add       & 8192 & 512         & 16384             & 8.885             \\ \hline
+Multiply+Reduction & 1    & 8           & 128               & 0.004             \\ \hline
+Multiply+Reduction & 2    & 8           & 256               & 0.010             \\ \hline
+Multiply+Reduction & 4    & 8           & 512               & 0.018             \\ \hline
+Multiply+Reduction & 8    & 8           & 1024              & 0.038             \\ \hline
+Multiply+Reduction & 16   & 8           & 2048              & 0.081             \\ \hline
+Multiply+Reduction & 32   & 8           & 4096              & 0.132             \\ \hline
+Multiply+Reduction & 64   & 8           & 8192              & 0.256             \\ \hline
+Multiply+Reduction & 128  & 8           & 16384             & 0.374             \\ \hline
+Multiply+Reduction & 256  & 8           & 32768             & 0.698             \\ \hline
+Multiply+Reduction & 512  & 8           & 65536             & 0.922             \\ \hline
+Multiply+Reduction & 1024 & 8           & 131072            & 1.177             \\ \hline
+Multiply+Reduction & 2048 & 8           & 262144            & 1.345             \\ \hline
+Multiply+Reduction & 3072 & 8           & 393216            & 1.430             \\ \hline
+Multiply+Reduction & 4096 & 8           & 524288            & 1.461             \\ \hline
+Multiply+Reduction & 6144 & 8           & 786432            & 1.474             \\ \hline
+Multiply+Reduction & 8192 & 8           & 1048576           & 0.100             \\ \hline
+Multiply+Reduction & 1    & 16          & 64                & 0.004             \\ \hline
+Multiply+Reduction & 2    & 16          & 128               & 0.007             \\ \hline
+Multiply+Reduction & 4    & 16          & 256               & 0.014             \\ \hline
+Multiply+Reduction & 8    & 16          & 512               & 0.001             \\ \hline
+Multiply+Reduction & 16   & 16          & 1024              & 0.001             \\ \hline
+Multiply+Reduction & 32   & 16          & 2048              & 0.002             \\ \hline
+Multiply+Reduction & 64   & 16          & 4096              & 0.223             \\ \hline
+Multiply+Reduction & 128  & 16          & 8192              & 0.001             \\ \hline
+Multiply+Reduction & 256  & 16          & 16384             & 0.706             \\ \hline
+Multiply+Reduction & 512  & 16          & 32768             & 1.250             \\ \hline
+Multiply+Reduction & 1024 & 16          & 65536             & 1.698             \\ \hline
+Multiply+Reduction & 2048 & 16          & 131072            & 1.998             \\ \hline
+Multiply+Reduction & 3072 & 16          & 196608            & 2.237             \\ \hline
+Multiply+Reduction & 4096 & 16          & 262144            & 2.388             \\ \hline
+Multiply+Reduction & 6144 & 16          & 393216            & 2.439             \\ \hline
+Multiply+Reduction & 8192 & 16          & 524288            & 2.578             \\ \hline
+Multiply+Reduction & 1    & 32          & 32                & 0.004             \\ \hline
+Multiply+Reduction & 2    & 32          & 64                & 0.011             \\ \hline
+Multiply+Reduction & 4    & 32          & 128               & 0.020             \\ \hline
+Multiply+Reduction & 8    & 32          & 256               & 0.042             \\ \hline
+Multiply+Reduction & 16   & 32          & 512               & 0.083             \\ \hline
+Multiply+Reduction & 32   & 32          & 1024              & 0.133             \\ \hline
+Multiply+Reduction & 64   & 32          & 2048              & 0.298             \\ \hline
+Multiply+Reduction & 128  & 32          & 4096              & 0.437             \\ \hline
+Multiply+Reduction & 256  & 32          & 8192              & 1.090             \\ \hline
+Multiply+Reduction & 512  & 32          & 16384             & 1.643             \\ \hline
+Multiply+Reduction & 1024 & 32          & 32768             & 2.470             \\ \hline
+Multiply+Reduction & 2048 & 32          & 65536             & 3.328             \\ \hline
+Multiply+Reduction & 3072 & 32          & 98304             & 3.281             \\ \hline
+Multiply+Reduction & 4096 & 32          & 131072            & 3.852             \\ \hline
+Multiply+Reduction & 6144 & 32          & 196608            & 4.182             \\ \hline
+Multiply+Reduction & 8192 & 32          & 262144            & 4.143             \\ \hline
+Multiply+Reduction & 1    & 64          & 16                & 0.004             \\ \hline
+Multiply+Reduction & 2    & 64          & 32                & 0.009             \\ \hline
+Multiply+Reduction & 4    & 64          & 64                & 0.021             \\ \hline
+Multiply+Reduction & 8    & 64          & 128               & 0.041             \\ \hline
+Multiply+Reduction & 16   & 64          & 256               & 0.065             \\ \hline
+Multiply+Reduction & 32   & 64          & 512               & 0.122             \\ \hline
+Multiply+Reduction & 64   & 64          & 1024              & 0.319             \\ \hline
+Multiply+Reduction & 128  & 64          & 2048              & 0.472             \\ \hline
+Multiply+Reduction & 256  & 64          & 4096              & 1.185             \\ \hline
+Multiply+Reduction & 512  & 64          & 8192              & 1.988             \\ \hline
+Multiply+Reduction & 1024 & 64          & 16384             & 3.089             \\ \hline
+Multiply+Reduction & 2048 & 64          & 32768             & 3.883             \\ \hline
+Multiply+Reduction & 3072 & 64          & 49152             & 4.920             \\ \hline
+Multiply+Reduction & 4096 & 64          & 65536             & 5.454             \\ \hline
+Multiply+Reduction & 6144 & 64          & 98304             & 6.219             \\ \hline
+Multiply+Reduction & 8192 & 64          & 131072            & 6.265             \\ \hline
+Multiply+Reduction & 1    & 128         & 8                 & 0.005             \\ \hline
+Multiply+Reduction & 2    & 128         & 16                & 0.010             \\ \hline
+Multiply+Reduction & 4    & 128         & 32                & 0.019             \\ \hline
+Multiply+Reduction & 8    & 128         & 64                & 0.039             \\ \hline
+Multiply+Reduction & 16   & 128         & 128               & 0.077             \\ \hline
+Multiply+Reduction & 32   & 128         & 256               & 0.161             \\ \hline
+Multiply+Reduction & 64   & 128         & 512               & 0.233             \\ \hline
+Multiply+Reduction & 128  & 128         & 1024              & 0.582             \\ \hline
+Multiply+Reduction & 256  & 128         & 2048              & 1.094             \\ \hline
+Multiply+Reduction & 512  & 128         & 4096              & 1.606             \\ \hline
+Multiply+Reduction & 1024 & 128         & 8192              & 3.227             \\ \hline
+Multiply+Reduction & 2048 & 128         & 16384             & 4.950             \\ \hline
+Multiply+Reduction & 3072 & 128         & 24576             & 5.759             \\ \hline
+Multiply+Reduction & 4096 & 128         & 32768             & 6.688             \\ \hline
+Multiply+Reduction & 6144 & 128         & 49152             & 7.448             \\ \hline
+Multiply+Reduction & 8192 & 128         & 65536             & 8.254             \\ \hline
+Multiply+Reduction & 1    & 256         & 4                 & 0.004             \\ \hline
+Multiply+Reduction & 2    & 256         & 8                 & 0.009             \\ \hline
+Multiply+Reduction & 4    & 256         & 16                & 0.018             \\ \hline
+Multiply+Reduction & 8    & 256         & 32                & 0.041             \\ \hline
+Multiply+Reduction & 16   & 256         & 64                & 0.080             \\ \hline
+Multiply+Reduction & 32   & 256         & 128               & 0.154             \\ \hline
+Multiply+Reduction & 64   & 256         & 256               & 0.300             \\ \hline
+Multiply+Reduction & 128  & 256         & 512               & 0.575             \\ \hline
+Multiply+Reduction & 256  & 256         & 1024              & 1.218             \\ \hline
+Multiply+Reduction & 512  & 256         & 2048              & 2.161             \\ \hline
+Multiply+Reduction & 1024 & 256         & 4096              & 3.295             \\ \hline
+Multiply+Reduction & 2048 & 256         & 8192              & 4.768             \\ \hline
+Multiply+Reduction & 3072 & 256         & 12288             & 5.157             \\ \hline
+Multiply+Reduction & 4096 & 256         & 16384             & 6.130             \\ \hline
+Multiply+Reduction & 6144 & 256         & 24576             & 6.813             \\ \hline
+Multiply+Reduction & 8192 & 256         & 32768             & 7.253             \\ \hline
+Multiply+Reduction & 1    & 512         & 2                 & 0.004             \\ \hline
+Multiply+Reduction & 2    & 512         & 4                 & 0.010             \\ \hline
+Multiply+Reduction & 4    & 512         & 8                 & 0.017             \\ \hline
+Multiply+Reduction & 8    & 512         & 16                & 0.036             \\ \hline
+Multiply+Reduction & 16   & 512         & 32                & 0.080             \\ \hline
+Multiply+Reduction & 32   & 512         & 64                & 0.167             \\ \hline
+Multiply+Reduction & 64   & 512         & 128               & 0.245             \\ \hline
+Multiply+Reduction & 128  & 512         & 256               & 0.527             \\ \hline
+Multiply+Reduction & 256  & 512         & 512               & 0.956             \\ \hline
+Multiply+Reduction & 512  & 512         & 1024              & 1.865             \\ \hline
+Multiply+Reduction & 1024 & 512         & 2048              & 2.564             \\ \hline
+Multiply+Reduction & 2048 & 512         & 4096              & 4.315             \\ \hline
+Multiply+Reduction & 3072 & 512         & 6144              & 5.077             \\ \hline
+Multiply+Reduction & 4096 & 512         & 8192              & 5.573             \\ \hline
+Multiply+Reduction & 6144 & 512         & 12288             & 5.753             \\ \hline
+Multiply+Reduction & 8192 & 512         & 16384             & 6.587             \\ \hline   
+\end{longtable}
+
+\end{document}
