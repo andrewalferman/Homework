@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  1 JUN 2017 23:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  2 JUN 2017 10:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1278,50 +1278,51 @@ Package lastpage Info: Please have a look at the pageslts package at
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 125.
 
-<Mult_Arraysize.pdf, id=1, 777.26573pt x 399.55524pt>
-File: Mult_Arraysize.pdf Graphic file (type pdf)
- <use Mult_Arraysize.pdf>
-Package pdftex.def Info: Mult_Arraysize.pdf used on input line 137.
+<Mult_Arraysize_2.pdf, id=1, 777.26573pt x 399.55524pt>
+File: Mult_Arraysize_2.pdf Graphic file (type pdf)
+
+<use Mult_Arraysize_2.pdf>
+Package pdftex.def Info: Mult_Arraysize_2.pdf used on input line 137.
 (pdftex.def)             Requested size: 367.6649pt x 188.99812pt.
 
-<Mult_Localsize.pdf, id=2, 571.75797pt x 404.12228pt>
-File: Mult_Localsize.pdf Graphic file (type pdf)
- <use Mult_Localsize.pdf>
-Package pdftex.def Info: Mult_Localsize.pdf used on input line 144.
+<Mult_Localsize_2.pdf, id=2, 571.75797pt x 404.12228pt>
+File: Mult_Localsize_2.pdf Graphic file (type pdf)
+
+<use Mult_Localsize_2.pdf>
+Package pdftex.def Info: Mult_Localsize_2.pdf used on input line 144.
 (pdftex.def)             Requested size: 367.6649pt x 259.87065pt.
+ [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
-[1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+ <./Mult_Arraysize_2.pdf> <./Mult_Localsize_2.pdf
 
- <./Mult_Arraysize.pdf> <./Mult_Localsize.pdf
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./Mult_Localsize_2.pdf): PDF
+ inclusion: multiple pdfs with page group included in a single page
+>] [2] <Mult_Reduc_Arraysize_2.pdf, id=104, 699.36533pt x 399.55524pt>
+File: Mult_Reduc_Arraysize_2.pdf Graphic file (type pdf)
 
-pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./Mult_Localsize.pdf): PDF i
-nclusion: multiple pdfs with page group included in a single page
->] [2] <Mult_Reduc_Arraysize.pdf, id=104, 691.69604pt x 399.55524pt>
-File: Mult_Reduc_Arraysize.pdf Graphic file (type pdf)
+<use Mult_Reduc_Arraysize_2.pdf>
+Package pdftex.def Info: Mult_Reduc_Arraysize_2.pdf used on input line 175.
+(pdftex.def)             Requested size: 367.6649pt x 210.05617pt.
 
-<use Mult_Reduc_Arraysize.pdf>
-Package pdftex.def Info: Mult_Reduc_Arraysize.pdf used on input line 177.
-(pdftex.def)             Requested size: 367.6649pt x 212.37903pt.
+<Mult_Reduc_Localsize_2.pdf, id=105, 701.81197pt x 399.55524pt>
+File: Mult_Reduc_Localsize_2.pdf Graphic file (type pdf)
 
-<Mult_Reduc_Localsize.pdf, id=105, 694.14268pt x 399.55524pt>
-File: Mult_Reduc_Localsize.pdf Graphic file (type pdf)
+<use Mult_Reduc_Localsize_2.pdf>
+Package pdftex.def Info: Mult_Reduc_Localsize_2.pdf used on input line 182.
+(pdftex.def)             Requested size: 367.6649pt x 209.32457pt.
+ [3 <./Mult_Reduc_Arraysize_2.pdf> <./Mult_Reduc_Localsize_2.pdf
 
-<use Mult_Reduc_Localsize.pdf>
-Package pdftex.def Info: Mult_Reduc_Localsize.pdf used on input line 184.
-(pdftex.def)             Requested size: 367.6649pt x 211.63522pt.
- [3 <./Mult_Reduc_Arraysize.pdf> <./Mult_Reduc_Localsize.pdf
-
-pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./Mult_Reduc_Localsize.pdf):
- PDF inclusion: multiple pdfs with page group included in a single page
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./Mult_Reduc_Localsize_2.pdf
+): PDF inclusion: multiple pdfs with page group included in a single page
 >]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 205.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 203.
  [4] [5] [6] [7] [8] [9] 
 AED: lastpage setting LastPage
 [10] (./Project_6_Writeup.aux) ) 
 Here is how much of TeX's memory you used:
  17399 strings out of 493014
- 316693 string characters out of 6133351
+ 316733 string characters out of 6133351
  440959 words of memory out of 5000000
  20660 multiletter control sequences out of 15000+600000
  13727 words of font info for 29 fonts, out of 8000000 for 9000
@@ -1330,9 +1331,9 @@ Here is how much of TeX's memory you used:
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/d
 vips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr
 8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Project_6_Writeup.pdf (10 pages, 113479 bytes).
+Output written on Project_6_Writeup.pdf (10 pages, 113069 bytes).
 PDF statistics:
- 233 PDF objects out of 1000 (max. 8388607)
+ 232 PDF objects out of 1000 (max. 8388607)
  53 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)

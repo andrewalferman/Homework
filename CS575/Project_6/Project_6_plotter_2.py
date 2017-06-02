@@ -10,7 +10,7 @@ import numpy as np
 import pylab as pyl
 import csv as csv
 
-with open('Project_6_data.csv_2', newline='') as csvfile:
+with open('Project_6_data_2.csv', newline='') as csvfile:
     linereader = csv.reader(csvfile, delimiter=',', quotechar='|')
     data = []
     newdata = []
