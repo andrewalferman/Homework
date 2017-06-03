@@ -131,44 +131,52 @@ The experiment was run on Rabbit at a time when the load average was approximate
 \textit{Show tables and graphs of the array multiplication and array multiplication with addition timing experiments.}
 
 Graphs of the computation speed versus the global size and local work group size can be found in Figures \ref{fig:MultGlobal} and \ref{fig:MultLocal}.  A table of the values used to generate these graphs can be found in Table \ref{tab:Data} of Appendix \ref{app:Data}.
-
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-        \includegraphics[width=0.7\linewidth]{Mult_Arraysize_2.pdf}
+        \includegraphics[width=0.65\linewidth]{Mult_Arraysize_2.pdf}
         \caption{Speed of the multiplication and multiplication with addition experiments vs. global size.  Note that the solid lines signify multiplication, while the dashed lines signify multiplication with addition.}
         \label{fig:MultGlobal}
 \end{figure}
-
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-        \includegraphics[width=0.7\linewidth]{Mult_Localsize_2.pdf}
+        \includegraphics[width=0.65\linewidth]{Mult_Localsize_2.pdf}
         \caption{Speed of the multiplication and multiplication with addition experiments vs. local size.  Note that the solid lines signify multiplication, while the dashed lines signify multiplication with addition.}
         \label{fig:MultLocal}
 \end{figure}
 
+\newpage
+
 \subsection*{Question 3}
 \textit{What patterns are you seeing in the performance curves of array multiplication and array multiplication-addition?}
 
+As seen in Figure \ref{fig:MultGlobal}, as the global work size increases, the performance increases for almost all values of the local work size.  For some values of the local work size, particularly smaller values (\texttt{LOCAL\_WORK\_SIZE} $< \sim 16$), the performance begins to hit a plateau as the global work size increased.  It is possible that with global work sizes much greater than 8MB, the performance will plateau for all of the larger values of \texttt{LOCAL\_WORK\_SIZE}.
 
+As seen in Figure \ref{fig:MultLocal}, the performance is largely flat beyond a \texttt{LOCAL\_WORK\_SIZE} of approximately 128 bytes, and may slightly degrade beyond a \texttt{LOCAL\_WORK\_SIZE} of approximately 256.  Thus, there may be an optimal value of the local work size for each value of the global work size, however more testing would be needed to verify these results.
+
+When either very small global work sizes or local work sizes were selected, performance was very poor.
 
 \subsection*{Question 4}
 \textit{Why do you think the patterns of array multiplication and array multiplication-addition look this way?}
 
+The performance increases as the global work size increases because the experiment may be easily run in parallel.  There is a significant amount of computational overhead in setting up the problem to be run on a GPU versus a CPU, and therefore at small values of the global work size the parallelism is not worth the setup cost.  However, as the global work size gets bigger, the parallel fraction increases, making the problem more optimal for a GPU setup with OpenCL.
 
+Having a local work size too small is not efficient because the GPU only has a limited number of processing elements, and with too small a work group each work group will be assigned a small amount of work at a given point in time.  It will therefore need to have have work reassigned to it often, which degrades performance.  With larger local work sizes, this will not be an issue.  Performance remains relatively flat as the local work size increases because the overhead becomes a relatively or even insignificantly small portion of the overall computational cost.  However, performance may begin to degrade as the local work size gets to be large due to issues storing large amounts of data in memory on the GPU.
 
 \subsection*{Question 5}
 \textit{What is the performance difference between doing a multiply and doing a multiply-add?}
 
-
+The performance of multiplication was in all cases slightly greater than the performance of multiplication with addition for the same global work size and local work size.  The number of calculations per second does not take into account that multiplication operations consisted of only one calculation, while operations of multiplication with addition consisted of two calculations.  Thus, although the performance dropped slightly with multiplication with addition versus multiplication alone, the actual number of calculations per second may be greater due to the increased amount of work done.  This may be due to the increased amount of instructions associated with a similar overhead, or it may have to do with the fact that GPU hardware supports simultaneous multiplication and addition in some circumstances.
 
 \subsection*{Question 6}
 \textit{What does the difference in performance between doing a multiply and a multiply-add mean for the proper use of GPU parallel computing?}
 
-
+Although multiplication alone is faster than multiplication with addition, the difference between the two is not huge.  Because multiplication with addition involves more computations than multiplication alone, it may be more efficient to do multiplication with addition than multiplication alone with addition separate, and the two should be done together whenever both operations are needed.
 
 \newpage
 \subsection*{Question 7}
 \textit{Show a table and graph for the performance of the multiplication-reduction experiment.}
+
+Graphs of the computation speed versus the global size and local work group size can be found in Figures \ref{fig:ReducGlobal} and \ref{fig:ReducLocal}.  A table of the values used to generate these graphs can be found along with the values for multiplication and multiplication with addition in Table \ref{tab:Data} of Appendix \ref{app:Data}.
 
 \begin{figure}[h]
 	\centering
@@ -187,17 +195,23 @@ Graphs of the computation speed versus the global size and local work group size
 \subsection*{Question 8}
 \textit{What patterns are you seeing in the performance curves of the multiplication-reduction experiment?}
 
+The performance curves of the multiplication with reduction in both Figures \ref{fig:ReducGlobal} and \ref{fig:ReducLocal} are largely similar to the curves seen earlier in Figures \ref{fig:MultGlobal} and \ref{fig:MultLocal}.  The performance appears to plateau slightly more with multiplication with reduction than it does for either multiplication or multiplication with addition as the global work size gets larger.
 
+The performance of the multiplication-reduction experiment appears to peak more with a \texttt{LOCAL\_WORK\_SIZE} of 128 than it did with either the multiplication or the multiplication with addition experiments.
+
+Overall, the performance of the multiplication-reduction experiment was overall similar to the performance of the multiplication with addition experiment.
 
 \subsection*{Question 9}
 \textit{Why do you think the patterns of the multiplication-reduction experiment look this way?}
 
+The reasons that the patterns of the multiplication-reduction experiment look the way they do are similar to the reasons that the multiplication and multiplication with addition experiments exhibit the same trends.
 
+The reasoning for the increased tendency of the multiplication-reduction experiment to plateau may be because the data eventually becomes less and less parallel as the reduction progresses.  With data that is not highly parallel, the performance of the GPU diminishes when compared to the performance of a CPU.
 
 \subsection*{Question 10}
 \textit{What do the patterns in the multiplication-reduction experiment mean for the proper use of GPU parallel computing?}
 
-
+The GPU can be used to efficiently multiply and reduce a set of data.  The high performance of the operation means that with large sets of data to be handled in this manner, a GPU should be employed, with larger sets of data corresponding to an increase in performance.
 
 \newpage
 \section{Appendices}
