@@ -3,20 +3,14 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
-#ifdef WIN32
-  #include <windows.h>
-#else
-  #include <unistd.h>
-#endif
 
-#include "cl.h"
-#include "cl_platform.h"
 #include "simd.p5.h"
 
 #ifndef SIZE
   #define SIZE   32768
 #endif
+
+// 8 was used here because this script is intended to be run on flip
 
 #ifndef NUMT
   #define NUMT 8
@@ -68,7 +62,7 @@ int main ()
   	{
   		sum += Array[i] * Array[i + shift];
   	}
-  	Sums[shift] = sum;	// note the "fix #2" from false sharing if you are using OpenMP
+  	Sums[shift] = sum;
   }
 
   // Using OpenMP
@@ -100,19 +94,7 @@ int main ()
 
   double time3 = omp_get_wtime( );
 
-  // // Using OpenCL
-  //
-  // for( int shift = 0; shift < Size; shift++ )
-  // {
-  // 	float sum = 0.;
-  // 	for( int i = 0; i < Size; i++ )
-  // 	{
-  // 		sum += Array[i] * Array[i + shift];
-  // 	}
-  // 	Sums[shift] = sum;	// note the "fix #2" from false sharing if you are using OpenMP
-  // }
-
-  double time4 = omp_get_wtime( );
+  // OpenCL will be done in a different file due to flip not having a GPU
 
   // Print out the values obtained for the signal
 
@@ -129,7 +111,7 @@ int main ()
 
   // Print out the speeds
 
-  printf("KiloCorrels/sec,%10.6lf,%10.6lf,%10.6lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
+  printf("KiloCorrels/sec,%10.3lf,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
 
   return 0;
 }
