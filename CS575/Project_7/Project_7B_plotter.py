@@ -28,9 +28,6 @@ with open('Project_7B_CL_Data.csv', newline='') as csvfile2:
 CLspeedrow = np.array([float(i) for i in CLdata[-1][1:]])
 CLdata = np.array(CLdata[1:-1])
 
-print(data[1:10])
-print(CLdata[1:10])
-
 # Clear the previous plots
 pyl.clf()
 pyl.cla()
@@ -68,6 +65,8 @@ fig.subplots_adjust(right=0.75)
 
 pyl.savefig('Signal_Autocorrelated.pdf', bbox_extra_artists=(lgd,),
             bbox_inches='tight')
+pyl.savefig('Signal_Autocorrelated.png', bbox_extra_artists=(lgd,),
+            bbox_inches='tight')
 
 pyl.figure(1)
 plotdata = [speedrow[0], CLspeedrow[0], speedrow[1], CLspeedrow[1],
@@ -78,6 +77,7 @@ pyl.xticks(y_pos, headings, ha='right', rotation=45)
 pyl.ylabel('KiloCorrelations/second')
 
 pyl.savefig('Computational_Speeds.pdf', bbox_inches='tight')
+pyl.savefig('Computational_Speeds.png', bbox_inches='tight')
 
 fig2 = pyl.figure(2)
 x2 = fig2.add_subplot(111)
@@ -86,17 +86,17 @@ x2 = fig2.add_subplot(111)
 pyl.ylabel('Magnitude')
 pyl.xlabel('Shift Number')
 x2.grid(which='both')
-pyl.scatter(data[15000:15500, 0], data[15000:15500, 1],
+pyl.scatter(data[1:512, 0], data[1:512, 1],
             s=1, label='Serial CPU (flip)', color=color[0])
-pyl.scatter(data[15000:15500, 0], data[15000:15500, 2],
+pyl.scatter(data[1:512, 0], data[1:512, 2],
             s=1, label='Parallel (OpenMP) CPU (flip)', color=color[1])
-pyl.scatter(data[15000:15500, 0], data[15000:15500, 3],
+pyl.scatter(data[1:512, 0], data[1:512, 3],
             s=1, label='Parallel (SIMD) CPU (flip)', color=color[2])
-pyl.scatter(CLdata[15000:15500, 0], CLdata[15000:15500, 1],
+pyl.scatter(CLdata[1:512, 0], CLdata[1:512, 1],
             s=1, label='Serial CPU (rabbit)', color=color[3])
-pyl.scatter(CLdata[15000:15500, 0], CLdata[15000:15500, 2],
+pyl.scatter(CLdata[1:512, 0], CLdata[1:512, 2],
             s=1, label='Parallel (OpenMP) CPU (rabbit)', color=color[4])
-pyl.scatter(CLdata[15000:15500, 0], CLdata[15000:15500, 3],
+pyl.scatter(CLdata[1:512, 0], CLdata[1:512, 3],
             s=1, label='Parallel (OPENCL) GPU', color=color[5])
 pyl.legend(bbox_to_anchor=(1.05, 1), loc=2)
 handles2, labels2 = x2.get_legend_handles_labels()
@@ -104,6 +104,8 @@ lgd2 = x2.legend(handles2, labels2, bbox_to_anchor=(1.05, 1), loc=2, ncol=1)
 fig2.subplots_adjust(right=0.75)
 
 pyl.savefig('Signal_Autocorrelated_Zoomed.pdf', bbox_extra_artists=(lgd2,),
+            bbox_inches='tight')
+pyl.savefig('Signal_Autocorrelated_Zoomed.png', bbox_extra_artists=(lgd2,),
             bbox_inches='tight')
 
 pyl.show()

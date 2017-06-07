@@ -105,9 +105,9 @@ int main ()
 
   // Calculate computational speed
 
-  float SpeedSerial = Size / (time1-time0) / 1000;
-  float SpeedOpenMP = Size / (time2-time1) / 1000;
-  float SpeedSIMD = Size / (time3-time2) / 1000;
+  float SpeedSerial = (double) Size / (time1-time0) / 1000.;
+  float SpeedOpenMP = (double) Size / (time2-time1) / 1000.;
+  float SpeedSIMD = (double) Size / (time3-time2) / 1000.;
 
   // Print out the speeds
 
