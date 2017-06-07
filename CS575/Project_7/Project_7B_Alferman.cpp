@@ -19,7 +19,7 @@
 #endif
 
 #ifndef NUMT
-  #define NUMT 4
+  #define NUMT 8
 #endif
 
 float Array[2*SIZE];
@@ -123,13 +123,13 @@ int main ()
 
   // Calculate computational speed
 
-  float SpeedSerial = Size / (time1-time0) / 1000000;
-  float SpeedOpenMP = Size / (time2-time1) / 1000000;
-  float SpeedSIMD = Size / (time3-time2) / 1000000;
+  float SpeedSerial = Size / (time1-time0) / 1000;
+  float SpeedOpenMP = Size / (time2-time1) / 1000;
+  float SpeedSIMD = Size / (time3-time2) / 1000;
 
   // Print out the speeds
 
-  printf("MegaCorrels/sec,%10.6lf,%10.6lf,%10.6lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
+  printf("KiloCorrels/sec,%10.6lf,%10.6lf,%10.6lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
 
   return 0;
 }
