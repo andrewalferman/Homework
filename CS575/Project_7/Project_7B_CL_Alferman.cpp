@@ -148,6 +148,11 @@ int main ( int argc, char *argv[ ] )
 
   // fill the host memory buffers:
 
+  for( int i = 0; i < 2*Size; i++ )
+	{
+		hArray[i] = Array[i]
+	}
+
   size_t dataSize = 1*Size * sizeof(float);
 
   // 3. create an opencl context:
