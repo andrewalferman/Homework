@@ -55,6 +55,8 @@ int main ()
   }
   fclose( fp );
 
+  printf("Shift,Serial,OpenMP,SIMD\n");
+
   // Non-parallelism method
 
   double time0 = omp_get_wtime( );
@@ -127,7 +129,7 @@ int main ()
 
   // Print out the speeds
 
-  printf("MegaCorrels/sec,%10.3lf,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
+  printf("MegaCorrels/sec,%10.6lf,%10.6lf,%10.6lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
 
   return 0;
 }
