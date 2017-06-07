@@ -150,7 +150,7 @@ int main ( int argc, char *argv[ ] )
 
   for( int i = 0; i < 2*Size; i++ )
 	{
-		hArray[i] = Array[i]
+		hArray[i] = Array[i];
 	}
 
   size_t dataSize = 1*Size * sizeof(float);
