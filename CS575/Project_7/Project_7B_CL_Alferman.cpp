@@ -238,12 +238,16 @@ int main ( int argc, char *argv[ ] )
   size_t localWorkSize[3]  = { LOCAL_SIZE,   1, 1 };
 
   Wait( cmdQueue );
+  double time3 = omp_get_wtime( );
+
+	time3 = omp_get_wtime( );
 
   status = clEnqueueNDRangeKernel( cmdQueue, kernel, 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clEnqueueNDRangeKernel failed: %d\n", status );
 
 	Wait( cmdQueue );
+  double time4 = omp_get_wtime( );
 
 	// 12. read the results buffer back from the device to the host:
 
@@ -252,7 +256,7 @@ int main ( int argc, char *argv[ ] )
 			fprintf( stderr, "clEnqueueReadBuffer failed\n" );
 
   // The work is done, so we might as well get the time
-  double time3 = omp_get_wtime( );
+  double time5 = omp_get_wtime( );
 
   #ifdef WIN32
     Sleep( 2000 );
@@ -280,7 +284,7 @@ int main ( int argc, char *argv[ ] )
 
   float SpeedSerial = Size / (time1-time0) / 1000;
   float SpeedOpenMP = Size / (time2-time1) / 1000;
-  float SpeedCL = Size / (time3-time2) / 1000;
+  float SpeedCL = Size / (time5-time2) / 1000;
 
   // Print out the speeds
 
