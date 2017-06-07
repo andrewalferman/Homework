@@ -153,7 +153,7 @@ int main ( int argc, char *argv[ ] )
 		hArray[i] = (float) sqrt(  (double)i  );
 	}
 
-  size_t dataSize = 2*Size * sizeof(float);
+  size_t dataSize = 1*Size * sizeof(float);
 
   // 3. create an opencl context:
 
