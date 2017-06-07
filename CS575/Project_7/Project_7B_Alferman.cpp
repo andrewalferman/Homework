@@ -112,7 +112,7 @@ int main ()
 
   for ( int i = 0; i < Size; i++ )
   {
-    printf("%d,%10.3lf,%10.3lf\n", i, Sums[i], SumsMP[i]);
+    printf("%d,%10.3lf,%10.3lf,%10.3lf\n", i, Sums[i], SumsMP[i], SumsSIMD[i]);
   }
 
   return 0;
