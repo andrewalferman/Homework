@@ -127,7 +127,7 @@ int main ()
 
   // Print out the speeds
 
-  printf("MegaCorrels/sec,%10.3lf,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD)
+  printf("MegaCorrels/sec,%10.3lf,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD);
 
   return 0;
 }
