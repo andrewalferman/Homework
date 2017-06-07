@@ -178,7 +178,7 @@ int main ( int argc, char *argv[ ] )
 
   // 6. enqueue the command to write the data from the host buffers to the device buffers:
 
-  status = clEnqueueWriteBuffer( cmdQueue, dArray, CL_FALSE, 0, dataSize, hArray, 0, NULL, NULL );
+  status = clEnqueueWriteBuffer( cmdQueue, dArray, CL_FALSE, 0, 2*dataSize, hArray, 0, NULL, NULL );
 	if( status != CL_SUCCESS )
 		fprintf( stderr, "clEnqueueWriteBuffer failed (1)\n" );
 

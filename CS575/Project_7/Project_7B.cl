@@ -13,8 +13,4 @@ AutoCorrelate( global const float *dArray, global float *dSums )
 	}
 	dSums[shift] = sum;
 
-  // Add things here
-
-  //...
-
 }
