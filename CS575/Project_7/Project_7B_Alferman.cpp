@@ -5,9 +5,9 @@
 #include <time.h>
 #include <string.h>
 #ifdef WIN32
-#include <windows.h>
+  #include <windows.h>
 #else
-#include <unistd.h>
+  #include <unistd.h>
 #endif
 
 #include "cl.h"
@@ -26,6 +26,7 @@ float Array[2*SIZE];
 float  Sums[1*SIZE];
 float  SumsMP[1*SIZE];
 float  SumsSIMD[1*SIZE];
+float  SumsCL[1*SIZE];
 
 int main ()
 {
@@ -55,6 +56,7 @@ int main ()
   fclose( fp );
 
   // Non-parallelism method
+
   double time0 = omp_get_wtime( );
 
   for( int shift = 0; shift < Size; shift++ )
@@ -87,7 +89,7 @@ int main ()
 
   double time2 = omp_get_wtime( );
 
-  // // Using CPU SIMD
+  // Using CPU SIMD
 
   for( int shift = 0; shift < Size; shift++ )
   {
@@ -110,10 +112,22 @@ int main ()
 
   double time4 = omp_get_wtime( );
 
+  // Print out the values obtained for the signal
+
   for ( int i = 0; i < Size; i++ )
   {
     printf("%d,%10.3lf,%10.3lf,%10.3lf\n", i, Sums[i], SumsMP[i], SumsSIMD[i]);
   }
+
+  // Calculate computational speed
+
+  float SpeedSerial = Size / (time1-time0) / 1000000;
+  float SpeedOpenMP = Size / (time2-time1) / 1000000;
+  float SpeedSIMD = Size / (time3-time2) / 1000000;
+
+  // Print out the speeds
+
+  printf("MegaCorrels/sec,%10.3lf,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedSIMD)
 
   return 0;
 }

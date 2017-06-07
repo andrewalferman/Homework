@@ -29,12 +29,13 @@ pyl.xlabel('Shift Number')
 x.grid(which='both')
 pyl.plot(data[:, 0], data[:, 1], label='Serial CPU')
 pyl.plot(data[:, 0], data[:, 2], label='Parallel (OpenMP) CPU')
+pyl.plot(data[:, 0], data[:, 3], label='Parallel (SIMD) CPU')
 pyl.legend(bbox_to_anchor=(1.05, 1), loc=2)
 handles, labels = x.get_legend_handles_labels()
 lgd = x.legend(handles, labels, bbox_to_anchor=(1.05, 1), loc=2, ncol=1)
 fig.subplots_adjust(right=0.75)
 
-pyl.savefig('Signal_Autocorrelated.png', bbox_extra_artists=(lgd,),
+pyl.savefig('Signal_Autocorrelated.pdf', bbox_extra_artists=(lgd,),
             bbox_inches='tight')
 
 pyl.show()
