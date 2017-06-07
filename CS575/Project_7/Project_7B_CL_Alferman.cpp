@@ -51,13 +51,13 @@ int main ( int argc, char *argv[ ] )
   // see if we can even open the opencl kernel program
 	// (no point going on if we can't):
 
-	FILE *fp;
+	FILE *fp1;
 #ifdef WIN32
-	errno_t err = fopen_s( &fp, CL_FILE_NAME, "r" );
+	errno_t err = fopen_s( &fp1, CL_FILE_NAME, "r" );
 	if( err != 0 )
 #else
-	fp = fopen( CL_FILE_NAME, "r" );
-	if( fp == NULL )
+	fp1 = fopen( CL_FILE_NAME, "r" );
+	if( fp1 == NULL )
 #endif
 	{
 		fprintf( stderr, "Cannot open OpenCL source file '%s'\n", CL_FILE_NAME );
@@ -66,22 +66,22 @@ int main ( int argc, char *argv[ ] )
 
   // Read the signal file
 
-  FILE *fp = fopen( "signal.txt", "r" );
-  if( fp == NULL )
+  FILE *fp2 = fopen( "signal.txt", "r" );
+  if( fp2 == NULL )
   {
   	fprintf( stderr, "Cannot open file 'signal.txt'\n" );
   	exit( 1 );
   }
   int Size;
-  fscanf( fp, "%d", &Size );
+  fscanf( fp2, "%d", &Size );
   Size = SIZE;
 
   for( int i = 0; i < Size; i++ )
   {
-  	fscanf( fp, "%f", &Array[i] );
+  	fscanf( fp2, "%f", &Array[i] );
   	Array[i+Size] = Array[i];		// duplicate the array
   }
-  fclose( fp );
+  fclose( fp2 );
 
   printf("Shift,Serial,OpenMP,OpenCL\n");
 
@@ -146,6 +146,15 @@ int main ( int argc, char *argv[ ] )
   float *hArray = new float[ 2*Size ];
   float *hSums  = new float[ 1*Size ];
 
+  // fill the host memory buffers:
+
+  for( int i = 0; i < 2*Size; i++ )
+	{
+		hArray[i] = (float) sqrt(  (double)i  );
+	}
+
+  size_t dataSize = 2*Size * sizeof(float);
+
   // 3. create an opencl context:
 
 	cl_context context = clCreateContext( NULL, 1, &device, NULL, NULL, &status );
@@ -175,13 +184,13 @@ int main ( int argc, char *argv[ ] )
 
   // 7. read the kernel code from a file:
 
-  fseek( fp, 0, SEEK_END );
-  size_t fileSize = ftell( fp );
-  fseek( fp, 0, SEEK_SET );
+  fseek( fp1, 0, SEEK_END );
+  size_t fileSize = ftell( fp1 );
+  fseek( fp1, 0, SEEK_SET );
   char *clProgramText = new char[ fileSize+1 ];		// leave room for '\0'
-  size_t n = fread( clProgramText, 1, fileSize, fp );
+  size_t n = fread( clProgramText, 1, fileSize, fp1 );
   clProgramText[fileSize] = '\0';
-  fclose( fp );
+  fclose( fp1 );
   if( n != fileSize )
     fprintf( stderr, "Expected to read %d bytes read from '%s' -- actually read %d.\n", fileSize, CL_FILE_NAME, n );
 
