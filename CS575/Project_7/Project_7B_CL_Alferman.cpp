@@ -78,11 +78,11 @@ int main ( int argc, char *argv[ ] )
 
   float *hArray = new float[ 2*Size ];  // Doing this now to speed things up later
 
-  for( int i = 0; i < Size; i++ )
-  {
-  	fscanf( fp2, "%f", &Array[i] );
-  	Array[i+Size] = Array[i];		// duplicate the array
-  }
+  // for( int i = 0; i < Size; i++ )
+  // {
+  // 	fscanf( fp2, "%f", &Array[i] );
+  // 	Array[i+Size] = Array[i];		// duplicate the array
+  // }
 
   for( int i = 0; i < Size; i++ )
   {
@@ -102,7 +102,7 @@ int main ( int argc, char *argv[ ] )
   	float sum = 0.;
   	for( int i = 0; i < Size; i++ )
   	{
-  		sum += Array[i] * Array[i + shift];
+  		sum += hArray[i] * hArray[i + shift];
   	}
   	Sums[shift] = sum;
   }
@@ -120,7 +120,7 @@ int main ( int argc, char *argv[ ] )
   	float sum = 0.;
   	for( int i = 0; i < Size; i++ )
   	{
-  		sum += Array[i] * Array[i + shift];
+  		sum += hArray[i] * hArray[i + shift];
   	}
   	SumsMP[shift] = sum;	// note the "fix #2" from false sharing if you are using OpenMP
   }
