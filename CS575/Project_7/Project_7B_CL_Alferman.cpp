@@ -76,10 +76,12 @@ int main ( int argc, char *argv[ ] )
   fscanf( fp2, "%d", &Size );
   Size = SIZE;
 
+  float *hArray = new float[ 2*Size ];
+
   for( int i = 0; i < Size; i++ )
   {
-  	fscanf( fp2, "%f", &Array[i] );
-  	Array[i+Size] = Array[i];		// duplicate the array
+  	fscanf( fp2, "%f", &hArray[i] );
+  	hArray[i+Size] = hArray[i];		// duplicate the array
   }
   fclose( fp2 );
 
@@ -143,15 +145,15 @@ int main ( int argc, char *argv[ ] )
 
 	// 2. allocate the host memory buffers:
 
-  float *hArray = new float[ 2*Size ];
+  // float *hArray = new float[ 2*Size ];
   float *hSums  = new float[ 1*Size ];
 
   // fill the host memory buffers:
 
-  for( int i = 0; i < 2*Size; i++ )
-	{
-		hArray[i] = Array[i];
-	}
+  // for( int i = 0; i < 2*Size; i++ )
+	// {
+	// 	hArray[i] = Array[i];
+	// }
 
   size_t dataSize = 1*Size * sizeof(float);
 
