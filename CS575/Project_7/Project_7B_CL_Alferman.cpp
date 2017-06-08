@@ -86,12 +86,18 @@ int main ( int argc, char *argv[ ] )
 
   for( int i = 0; i < Size; i++ )
   {
-  	fscanf( fp2, "%f", &hArray[i] );
-  	hArray[i+Size] = hArray[i];		// duplicate the array
+  	fscanf( fp2, "%f", &Array[i] );
+  	Array[i+Size] = Array[i];		// duplicate the array
   }
   fclose( fp2 );
 
   printf("Shift,Serial,OpenMP,OpenCL\n");
+
+  for( int i = 0; i < 2*Size; i++ ) // There's no real need to have both hArray and Array
+	{
+		hArray[i] = Array[i];
+	}
+
 
   // Non-parallelism method
 
@@ -102,7 +108,7 @@ int main ( int argc, char *argv[ ] )
   	float sum = 0.;
   	for( int i = 0; i < Size; i++ )
   	{
-  		sum += hArray[i] * hArray[i + shift];
+  		sum += Array[i] * Array[i + shift];
   	}
   	Sums[shift] = sum;
   }
@@ -120,7 +126,7 @@ int main ( int argc, char *argv[ ] )
   	float sum = 0.;
   	for( int i = 0; i < Size; i++ )
   	{
-  		sum += hArray[i] * hArray[i + shift];
+  		sum += Array[i] * Array[i + shift];
   	}
   	SumsMP[shift] = sum;	// note the "fix #2" from false sharing if you are using OpenMP
   }
