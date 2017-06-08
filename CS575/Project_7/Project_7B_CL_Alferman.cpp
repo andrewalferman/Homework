@@ -76,7 +76,13 @@ int main ( int argc, char *argv[ ] )
   fscanf( fp2, "%d", &Size );
   Size = SIZE;
 
-  float *hArray = new float[ 2*Size ];
+  float *hArray = new float[ 2*Size ];  // Doing this now to speed things up later
+
+  for( int i = 0; i < Size; i++ )
+  {
+  	fscanf( fp2, "%f", &Array[i] );
+  	Array[i+Size] = Array[i];		// duplicate the array
+  }
 
   for( int i = 0; i < Size; i++ )
   {
@@ -87,37 +93,37 @@ int main ( int argc, char *argv[ ] )
 
   printf("Shift,Serial,OpenMP,OpenCL\n");
 
-  // // Non-parallelism method
-  //
-  // double time0 = omp_get_wtime( );
-  //
-  // for( int shift = 0; shift < Size; shift++ )
-  // {
-  // 	float sum = 0.;
-  // 	for( int i = 0; i < Size; i++ )
-  // 	{
-  // 		sum += Array[i] * Array[i + shift];
-  // 	}
-  // 	Sums[shift] = sum;
-  // }
-  //
-  // // Using OpenMP
-  //
-  // double time1 = omp_get_wtime( );
-  //
-  // omp_set_num_threads( NUMT );
-  //
-  // float sum;
-  // #pragma omp parallel for default(none), shared(Array, SumsMP, Size), private(sum)
-  // for( int shift = 0; shift < Size; shift++ )
-  // {
-  // 	float sum = 0.;
-  // 	for( int i = 0; i < Size; i++ )
-  // 	{
-  // 		sum += Array[i] * Array[i + shift];
-  // 	}
-  // 	SumsMP[shift] = sum;	// note the "fix #2" from false sharing if you are using OpenMP
-  // }
+  // Non-parallelism method
+
+  double time0 = omp_get_wtime( );
+
+  for( int shift = 0; shift < Size; shift++ )
+  {
+  	float sum = 0.;
+  	for( int i = 0; i < Size; i++ )
+  	{
+  		sum += Array[i] * Array[i + shift];
+  	}
+  	Sums[shift] = sum;
+  }
+
+  // Using OpenMP
+
+  double time1 = omp_get_wtime( );
+
+  omp_set_num_threads( NUMT );
+
+  float sum;
+  #pragma omp parallel for default(none), shared(Array, SumsMP, Size), private(sum)
+  for( int shift = 0; shift < Size; shift++ )
+  {
+  	float sum = 0.;
+  	for( int i = 0; i < Size; i++ )
+  	{
+  		sum += Array[i] * Array[i + shift];
+  	}
+  	SumsMP[shift] = sum;	// note the "fix #2" from false sharing if you are using OpenMP
+  }
 
   double time2 = omp_get_wtime( );
 
@@ -145,12 +151,12 @@ int main ( int argc, char *argv[ ] )
 
 	// 2. allocate the host memory buffers:
 
-  // float *hArray = new float[ 2*Size ];
+  // float *hArray = new float[ 2*Size ]; // commented out because we can do this eariler
   float *hSums  = new float[ 1*Size ];
 
   // fill the host memory buffers:
 
-  // for( int i = 0; i < 2*Size; i++ )
+  // for( int i = 0; i < 2*Size; i++ ) // There's no real need to have both hArray and Array
 	// {
 	// 	hArray[i] = Array[i];
 	// }
@@ -268,8 +274,7 @@ int main ( int argc, char *argv[ ] )
 
   for ( int i = 0; i < Size; i++ )
   {
-    //printf("%d,%10.3lf,%10.3lf,%10.3lf\n", i, Sums[i], SumsMP[i], hSums[i]);
-    printf("%d,%10.3lf\n", i, hSums[i]);
+    printf("%d,%10.3lf,%10.3lf,%10.3lf\n", i, Sums[i], SumsMP[i], hSums[i]);
   }
 
   // 13. clean everything up:
@@ -285,18 +290,15 @@ int main ( int argc, char *argv[ ] )
 
   // Calculate computational speed
 
-  // float SpeedSerial = (double) Size / (time1-time0) / 1000.;
-  // float SpeedOpenMP = (double) Size / (time2-time1) / 1000.;
+  float SpeedSerial = (double) Size / (time1-time0) / 1000.;
+  float SpeedOpenMP = (double) Size / (time2-time1) / 1000.;
   float SpeedCL = (double) Size / (time5-time2) / 1000.;
   float SpeedCL2 = (double) Size / (time5-time3) / 1000.;
-  float SpeedCL3 = (double) Size / (time5-time4) / 1000.;
 
   // Print out the speeds
 
-  // printf("KiloCorrels/sec,%10.3f,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedCL);
-  printf("KiloCorrels/sec,%10.3lf\n", SpeedCL);
-  printf("KiloCorrels/sec,%10.3lf\n", SpeedCL2);
-  printf("KiloCorrels/sec,%10.3lf\n", SpeedCL3);
+  printf("KiloCorrels/sec,%10.3f,%10.3lf,%10.3lf,%10.3lf\n", SpeedSerial,SpeedOpenMP,SpeedCL,SpeedCL2);
+
   return 0;
 }
 
